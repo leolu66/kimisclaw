@@ -77,7 +77,7 @@ _和用户六一对话时学到的东西，记在这里。_
 - [ ] 完成本地 OpenClaw 与 kimi.com 的关联
 
 ## API Keys
-- **和风天气**: `cc7d472e1def4665b91162bf0a3479e7` (XTC_WEATHER_API_KEY)
+- **和风天气**: 已存 vault（查 qweather 的 api_key）
 
 ## 云端可用技能
 - ✅ todo-manager - 任务管理
