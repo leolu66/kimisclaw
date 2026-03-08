@@ -1,0 +1,45 @@
+<!-- 学员 - 我的培训列表 -->
+<view class="container">
+  <view wx:if="{{!isLoggedIn}}" class="login-tip">
+    <view class="tip-content">
+      <text class="tip-text">请先登录查看您的培训</text>
+      <view class="btn btn-primary" bindtap="goToLogin">去登录</view>
+    </view>
+  </view>
+
+  <view wx:elif="{{tasks.length === 0}}" class="empty-state">
+    <text class="empty-text">您还没有报名任何培训</text>
+    <view class="btn btn-primary" bindtap="goToScan" style="margin-top: 40rpx;">扫码报名</view>
+  </view>
+
+  <view wx:else class="task-list">
+    <view wx:for="{{tasks}}" wx:key="_id" class="task-card">
+      <view class="task-header">
+        <text class="task-title">{{item.title}}</text>
+        <text class="task-status {{item.status}}">{{item.statusText}}</text>
+      </view>
+
+      <view class="task-info">
+        <view class="info-row">
+          <text class="info-label">课程：</text>
+          <text class="info-value">{{item.courseName}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">时间：</text>
+          <text class="info-value">{{item.date}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">地点：</text>
+          <text class="info-value">{{item.location}}</text>
+        </view>
+      </view>
+
+      <view class="task-footer">
+        <view class="register-status {{item.regStatus}}">
+          {{item.regStatusText}}
+        </view>
+        <view wx:if="{{item.canSurvey}}" class="action-btn primary" bindtap="goToSurvey" data-id="{{item._id}}">填写调查表</view>
+      </view>
+    </view>
+  </view>
+</view>

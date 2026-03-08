@@ -1,0 +1,29 @@
+<!-- 课程编辑页 -->
+<view class="container">
+  <view class="form-card">
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>课程名称
+      </label>
+      <input class="form-input" placeholder="请输入课程名称" value="{{form.name}}" bindinput="onNameInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>课程时长（分钟）
+      </label>
+      <input class="form-input" type="number" placeholder="请输入课程时长" value="{{form.duration}}" bindinput="onDurationInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">课程简介</label>
+      <textarea class="form-textarea" placeholder="请输入课程简介" value="{{form.description}}" bindinput="onDescInput" maxlength="500" />
+      <view class="char-count">{{form.description.length || 0}}/500</view>
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn btn-primary" bindtap="saveCourse">保存</button>
+    <button class="btn btn-default" bindtap="cancel">取消</button>
+  </view>
+</view>

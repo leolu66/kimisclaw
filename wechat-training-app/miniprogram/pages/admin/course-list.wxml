@@ -1,0 +1,45 @@
+<!-- 课程列表页 -->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索课程名称" value="{{keyword}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <!-- 课程列表 -->
+  <scroll-view scroll-y class="course-list" refresher-enabled refresher-triggered="{{isRefreshing}}" bindrefresherrefresh="onRefresh">
+    <view wx:if="{{courses.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="/images/empty.png" mode="aspectFit" />
+      <text class="empty-text">暂无课程</text>
+      <view class="btn btn-primary" bindtap="addCourse" style="margin-top: 40rpx;">创建课程</view>
+    </view>
+
+    <view wx:for="{{courses}}" wx:key="_id" class="course-card">
+      <view class="course-header">
+        <text class="course-name">{{item.name}}</text>
+        <text class="course-duration">{{item.duration}}分钟</text>
+      </view>
+      
+      <view class="course-desc" wx:if="{{item.description}}">
+        {{item.description}}
+      </view>
+      
+      <view class="course-footer">
+        <text class="course-time">{{item.createdAt}}</text>
+        <view class="course-actions">
+          <view class="action-btn edit" bindtap="editCourse" data-id="{{item._id}}">编辑</view>
+          <view class="action-btn delete" bindtap="deleteCourse" data-id="{{item._id}}">删除</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{hasMore}}" class="load-more">
+      <text bindtap="loadMore">加载更多</text>
+    </view>
+  </scroll-view>
+</view>
+
+<!-- 添加按钮 -->
+<view class="fab" bindtap="addCourse">
+  <text class="fab-icon">+</text>
+</view>

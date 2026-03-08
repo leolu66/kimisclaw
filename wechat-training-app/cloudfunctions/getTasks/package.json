@@ -1,0 +1,7 @@
+{
+  "name": "getTasks",
+  "version": "1.0.0",
+  "description": "获取培训任务列表",
+  "main": "index.js",
+  "dependencies": {}
+}

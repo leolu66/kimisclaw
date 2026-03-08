@@ -1,0 +1,52 @@
+<!-- 调查模板编辑页 -->
+<view class="container">
+  <view class="form-card">
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>模板名称
+      </label>
+      <input class="form-input" placeholder="请输入模板名称" value="{{form.name}}" bindinput="onNameInput" />
+    </view>
+  </view>
+
+  <view class="questions-section">
+    <view class="section-title">题目列表</view>
+
+    <view wx:if="{{form.questions.length === 0}}" class="empty-questions">
+      <text>还没有题目，点击下方按钮添加</text>
+    </view>
+
+    <view wx:for="{{form.questions}}" wx:key="index" class="question-card">
+      <view class="question-header">
+        <text class="question-index">题目 {{index + 1}}</text>
+        <text class="question-type">{{item.type === 'radio' ? '单选' : item.type === 'checkbox' ? '多选' : '问答'}}</text>
+        <view class="question-actions">
+          <text class="action-delete" bindtap="deleteQuestion" data-index="{{index}}">删除</text>
+        </view>
+      </view>
+
+      <input class="question-title-input" placeholder="请输入题目" value="{{item.title}}" data-index="{{index}}" bindinput="onQuestionTitleInput" />
+
+      <!-- 选项列表 -->
+      <view wx:if="{{item.type !== 'text'}}" class="options-list">
+        <view wx:for="{{item.options}}" wx:for-item="opt" wx:for-index="optIndex" wx:key="optIndex" class="option-item">
+          <input class="option-input" placeholder="选项 {{optIndex + 1}}" value="{{opt}}" data-qindex="{{index}}" data-oindex="{{optIndex}}" bindinput="onOptionInput" />
+          <text class="option-delete" bindtap="deleteOption" data-qindex="{{index}}" data-oindex="{{optIndex}}">×</text>
+        </view>
+        <view class="add-option" bindtap="addOption" data-index="{{index}}">+ 添加选项</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加题目按钮组 -->
+  <view class="add-question-bar">
+    <view class="add-btn" bindtap="addRadioQuestion">+ 单选题</view>
+    <view class="add-btn" bindtap="addCheckboxQuestion">+ 多选题</view>
+    <view class="add-btn" bindtap="addTextQuestion">+ 问答题</view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn btn-primary" bindtap="saveSurvey">保存</button>
+    <button class="btn btn-default" bindtap="cancel">取消</button>
+  </view>
+</view>

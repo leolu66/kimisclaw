@@ -1,0 +1,64 @@
+{
+  "testCases": [
+    {
+      "id": "260302-001",
+      "createdAt": "2026-03-02",
+      "level": 1,
+      "description": "验证播放音乐功能",
+      "skill": "potplayer-music",
+      "validation": "音乐播放成功",
+      "status": "enabled",
+      "executionOrder": 3
+    },
+    {
+      "id": "260302-002",
+      "createdAt": "2026-03-02",
+      "level": 2,
+      "description": "验证查询余额功能",
+      "skill": "api-balance-checker",
+      "validation": "返回余额数据",
+      "status": "enabled",
+      "executionOrder": 2
+    },
+    {
+      "id": "260302-003",
+      "createdAt": "2026-03-02",
+      "level": 1,
+      "description": "验证待办任务列表",
+      "skill": "todo-manager",
+      "validation": "返回任务列表",
+      "status": "enabled",
+      "executionOrder": 2
+    },
+    {
+      "id": "260302-004",
+      "createdAt": "2026-03-02",
+      "level": 2,
+      "description": "验证API余额查询详情",
+      "skill": "api-balance-checker",
+      "validation": "显示消耗和剩余",
+      "status": "enabled",
+      "executionOrder": 4
+    },
+    {
+      "id": "260302-005",
+      "createdAt": "2026-03-02",
+      "level": 2,
+      "description": "验证完成任务功能",
+      "skill": "todo-manager",
+      "validation": "状态变为已完成",
+      "status": "enabled",
+      "executionOrder": 5
+    },
+    {
+      "id": "260302-006",
+      "createdAt": "2026-03-02",
+      "level": 1,
+      "description": "发出你好指令测试是否有反馈 级别1",
+      "skill": null,
+      "validation": null,
+      "status": "enabled",
+      "executionOrder": 1
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+<!-- 任务列表页 -->
+<view class="container">
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-item">
+      <picker mode="selector" range="{{statusOptions}}" range-key="label" bindchange="onStatusChange">
+        <view class="picker">
+          {{currentStatusLabel}}
+          <text class="arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+    <view class="filter-item">
+      <input class="filter-input" placeholder="搜索培训标题" value="{{keyword}}" bindinput="onSearchInput" />
+    </view>
+  </view>
+
+  <!-- 任务列表 -->
+  <scroll-view scroll-y class="task-list" refresher-enabled refresher-triggered="{{isRefreshing}}" bindrefresherrefresh="onRefresh">
+    <view wx:if="{{tasks.length === 0}}" class="empty-state">
+      <text class="empty-text">暂无培训任务</text>
+      <view class="btn btn-primary" bindtap="createTask" style="margin-top: 40rpx;">创建任务</view>
+    </view>
+
+    <view wx:for="{{tasks}}" wx:key="_id" class="task-card" bindtap="viewTaskDetail" data-id="{{item._id}}">
+      <view class="task-header">
+        <text class="task-title">{{item.title}}</text>
+        <text class="task-status {{item.status}}">{{item.statusText}}</text>
+      </view>
+      
+      <view class="task-info">
+        <view class="info-item">
+          <text class="info-label">课程：</text>
+          <text class="info-value">{{item.courseName}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">老师：</text>
+          <text class="info-value">{{item.teacherName}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">单位：</text>
+          <text class="info-value">{{item.unitName}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">时间：</text>
+          <text class="info-value">{{item.date}} {{item.location}}</text>
+        </view>
+      </view>
+      
+      <view class="task-footer">
+        <view class="register-info">
+          <text class="register-count">{{item.registeredCount}}</text>/<text>{{item.capacity}}</text>人已报名
+        </view>
+        <view class="task-actions" catchtap="stopPropagation">
+          <view class="action-btn" bindtap="editTask" data-id="{{item._id}}">编辑</view>
+          <view class="action-btn primary" bindtap="showQRCode" data-id="{{item._id}}">二维码</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{hasMore}}" class="load-more">
+      <text bindtap="loadMore">加载更多</text>
+    </view>
+  </scroll-view>
+</view>
+
+<view class="fab" bindtap="createTask">
+  <text class="fab-icon">+</text>
+</view>

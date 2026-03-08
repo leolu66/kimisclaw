@@ -1,0 +1,46 @@
+<!-- 学员填写调查表 -->
+<view class="container">
+  <view class="header" wx:if="{{template}}">
+    <view class="header-title">培训反馈</view>
+    <view class="header-subtitle">{{template.name}}</view>
+  </view>
+
+  <view class="survey-form" wx:if="{{template}}">
+    <view wx:for="{{template.questions}}" wx:key="index" class="question-card">
+      <view class="question-title">
+        <text class="question-index">{{index + 1}}.</text>
+        {{item.title}}
+        <text class="question-type">（{{item.type === 'radio' ? '单选' : item.type === 'checkbox' ? '多选' : '问答'}}）</text>
+      </view>
+
+      <!-- 单选题 -->
+      <view wx:if="{{item.type === 'radio'}}" class="options-group">
+        <radio-group bindchange="onRadioChange" data-index="{{index}}">
+          <label wx:for="{{item.options}}" wx:for-item="opt" wx:key="optIndex" class="option-label">
+            <radio value="{{opt}}" checked="{{answers[index].value === opt}}" />
+            <text>{{opt}}</text>
+          </label>
+        </radio-group>
+      </view>
+
+      <!-- 多选题 -->
+      <view wx:elif="{{item.type === 'checkbox'}}" class="options-group">
+        <checkbox-group bindchange="onCheckboxChange" data-index="{{index}}">
+          <label wx:for="{{item.options}}" wx:for-item="opt" wx:key="optIndex" class="option-label">
+            <checkbox value="{{opt}}" checked="{{answers[index].value.includes(opt)}}" />
+            <text>{{opt}}</text>
+          </label>
+        </checkbox-group>
+      </view>
+
+      <!-- 问答题 -->
+      <view wx:else class="text-answer">
+        <textarea class="text-input" placeholder="请输入您的回答" value="{{answers[index].value}}" data-index="{{index}}" bindinput="onTextInput" maxlength="500" />
+      </view>
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn btn-primary" bindtap="submitSurvey">提交反馈</button>
+  </view>
+</view>

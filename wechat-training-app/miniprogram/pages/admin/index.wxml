@@ -1,0 +1,87 @@
+<!-- 管理员首页 - 数据看板 -->
+<view class="container">
+  <!-- 统计卡片 -->
+  <view class="stats-grid">
+    <view class="stat-card" bindtap="goToTasks">
+      <view class="stat-number">{{pendingCount}}</view>
+      <view class="stat-label">待办任务</view>
+    </view>
+    <view class="stat-card" bindtap="goToTasks">
+      <view class="stat-number">{{monthCount}}</view>
+      <view class="stat-label">本月培训</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-number">{{totalStudents}}</view>
+      <view class="stat-label">累计学员</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-number">{{totalCourses}}</view>
+      <view class="stat-label">课程总数</view>
+    </view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="card">
+    <view class="card-title">快捷入口</view>
+    <view class="quick-actions">
+      <view class="action-item" bindtap="goToCourseList">
+        <view class="action-icon course">📚</view>
+        <text class="action-text">课程管理</text>
+      </view>
+      <view class="action-item" bindtap="goToTeacherList">
+        <view class="action-icon teacher">👨‍🏫</view>
+        <text class="action-text">老师管理</text>
+      </view>
+      <view class="action-item" bindtap="goToUnitList">
+        <view class="action-icon unit">🏢</view>
+        <text class="action-text">单位管理</text>
+      </view>
+      <view class="action-item" bindtap="goToTaskList">
+        <view class="action-icon task">📋</view>
+        <text class="action-text">培训任务</text>
+      </view>
+      <view class="action-item" bindtap="goToSurveyList">
+        <view class="action-icon survey">📊</view>
+        <text class="action-text">调查模板</text>
+      </view>
+      <view class="action-item" bindtap="createTask">
+        <view class="action-icon create">➕</view>
+        <text class="action-text">新建任务</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 近期培训 -->
+  <view class="card">
+    <view class="card-header">
+      <view class="card-title">近期培训</view>
+      <text class="more-link" bindtap="goToTaskList">查看更多</text>
+    </view>
+    <view class="recent-list">
+      <view wx:if="{{recentTasks.length === 0}}" class="empty-hint">
+        暂无近期培训
+      </view>
+      <view wx:for="{{recentTasks}}" wx:key="_id" class="recent-item" bindtap="viewTaskDetail" data-id="{{item._id}}">
+        <view class="recent-date">
+          <text class="date-day">{{item.day}}</text>
+          <text class="date-month">{{item.month}}月</text>
+        </view>
+        <view class="recent-content">
+          <view class="recent-title">{{item.title}}</view>
+          <view class="recent-info">
+            <text class="info-tag">{{item.courseName}}</text>
+            <text class="info-tag">{{item.registeredCount}}人报名</text>
+          </view>
+        </view>
+        <view class="recent-status {{item.status}}">
+          {{item.statusText}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 新建任务浮动按钮 -->
+<view class="fab" bindtap="createTask">
+  <text class="fab-icon">+</text>
+</view>

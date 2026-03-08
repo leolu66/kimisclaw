@@ -1,0 +1,38 @@
+<!-- 学员登录页 -->
+<view class="container">
+  <view class="header">
+    <view class="header-title">欢迎回来</view>
+    <view class="header-subtitle">登录后查看您的培训</view>
+  </view>
+
+  <view class="login-card">
+    <!-- 微信一键登录 -->
+    <button class="wechat-login-btn" bindtap="wxLogin">
+      <text class="icon">💬</text>
+      <text>微信一键登录</text>
+    </button>
+
+    <view class="divider">
+      <view class="divider-line"></view>
+      <text class="divider-text">或</text>
+      <view class="divider-line"></view>
+    </view>
+
+    <!-- 手机号登录 -->
+    <view class="form-group">
+      <input class="form-input" type="number" placeholder="请输入手机号" value="{{form.phone}}" bindinput="onPhoneInput" />
+    </view>
+
+    <view class="form-group">
+      <input class="form-input" password placeholder="请输入密码" value="{{form.password}}" bindinput="onPasswordInput" />
+    </view>
+
+    <button class="btn btn-primary" bindtap="login">登录</button>
+  </view>
+
+  <view class="footer">
+    <text bindtap="goToScan">扫码报名</text>
+    <text class="divider-dot">•</text>
+    <text bindtap="goToRegister">立即注册</text>
+  </view>
+</view>

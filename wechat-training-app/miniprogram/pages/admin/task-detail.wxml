@@ -1,0 +1,75 @@
+<!-- 任务详情页 -->
+<view class="container">
+  <view class="detail-card">
+    <view class="detail-header">
+      <text class="detail-title">{{task.title}}</text>
+      <text class="detail-status {{task.status}}">{{task.statusText}}</text>
+    </view>
+
+    <view class="detail-section">
+      <view class="section-title">培训信息</view>
+      <view class="info-row">
+        <text class="info-label">课程：</text>
+        <text class="info-value">{{task.course?.name}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">老师：</text>
+        <text class="info-value">{{task.teacher?.name}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">单位：</text>
+        <text class="info-value">{{task.unit?.name}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">时间：</text>
+        <text class="info-value">{{task.date}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">地点：</text>
+        <text class="info-value">{{task.location}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">计划人数：</text>
+        <text class="info-value">{{task.capacity}}人</text>
+      </view>
+    </view>
+
+    <!-- 二维码 -->
+    <view class="detail-section" wx:if="{{task.qrCodeUrl}}">
+      <view class="section-title">报名二维码</view>
+      <view class="qr-section">
+        <image class="qr-image" src="{{task.qrCodeUrl}}" mode="aspectFit" show-menu-by-longpress />
+        <view class="qr-tip">长按保存二维码到相册</view>
+      </view>
+    </view>
+
+    <view class="detail-section" wx:else>
+      <view class="section-title">报名二维码</view>
+      <view class="qr-generate">
+        <text class="generate-tip">尚未生成二维码</text>
+        <view class="btn btn-primary" bindtap="generateQRCode">生成二维码</view>
+      </view>
+    </view>
+
+    <!-- 报名人数 -->
+    <view class="detail-section">
+      <view class="section-header">
+        <view class="section-title">报名情况</view>
+        <text class="section-count">{{task.registeredCount}}人已报名</text>
+      </view>
+    </view>
+
+    <!-- 调查结果 -->
+    <view class="detail-section" wx:if="{{task.surveyTemplate}}">
+      <view class="section-header">
+        <view class="section-title">调查结果</view>
+        <view class="section-action" bindtap="viewSurveyStats">查看统计</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-bar">
+    <view class="action-btn primary" bindtap="editTask">编辑任务</view>
+    <view class="action-btn" bindtap="showQRCode">查看二维码</view>
+  </view>
+</view>

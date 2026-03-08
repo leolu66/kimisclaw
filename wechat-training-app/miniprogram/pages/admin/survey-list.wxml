@@ -1,0 +1,34 @@
+<!-- 调查模板列表页 -->
+<view class="container">
+  <scroll-view scroll-y class="survey-list">
+    <view wx:if="{{surveys.length === 0}}" class="empty-state">
+      <text class="empty-text">暂无调查模板</text>
+      <view class="btn btn-primary" bindtap="addSurvey" style="margin-top: 40rpx;">创建模板</view>
+    </view>
+
+    <view wx:for="{{surveys}}" wx:key="_id" class="survey-card">
+      <view class="survey-header">
+        <text class="survey-name">{{item.name}}</text>
+        <text class="question-count">{{item.questions.length}}题</text>
+      </view>
+      
+      <view class="survey-preview">
+        <view wx:for="{{item.questions}}" wx:for-item="q" wx:key="index" class="preview-item">
+          {{index + 1}}. {{q.title}} ({{q.type === 'radio' ? '单选' : q.type === 'checkbox' ? '多选' : '问答'}})
+        </view>
+        <view wx:if="{{item.questions.length > 3}}" class="more-questions">
+          还有 {{item.questions.length - 3}} 题...
+        </view>
+      </view>
+      
+      <view class="survey-actions">
+        <view class="action-btn edit" bindtap="editSurvey" data-id="{{item._id}}">编辑</view>
+        <view class="action-btn delete" bindtap="deleteSurvey" data-id="{{item._id}}">删除</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<view class="fab" bindtap="addSurvey">
+  <text class="fab-icon">+</text>
+</view>

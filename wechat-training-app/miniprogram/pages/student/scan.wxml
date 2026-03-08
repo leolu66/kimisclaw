@@ -1,0 +1,30 @@
+<!-- 学员扫码入口 -->
+<view class="container">
+  <view class="scan-content">
+    <view class="scan-icon">
+      <text style="font-size: 120rpx;">📷</text>
+    </view>
+    
+    <view class="scan-title">扫码报名培训</view>
+    
+    <view class="scan-desc">
+      请扫描培训现场的二维码
+      <br />
+      完成培训报名和反馈
+    </view>
+    
+    <view class="btn btn-primary scan-btn" bindtap="scanCode">
+      扫码报名
+    </view>
+
+    <view class="divider">
+      <view class="divider-line"></view>
+      <text class="divider-text">或</text>
+      <view class="divider-line"></view>
+    </view>
+
+    <view class="btn btn-default" bindtap="goToLogin">
+      已有账号，立即登录
+    </view>
+  </view>
+</view>

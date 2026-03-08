@@ -1,0 +1,46 @@
+<!-- 老师端 - 我的培训列表 -->
+<view class="container">
+  <view wx:if="{{!isLoggedIn}}" class="login-tip">
+    <view class="tip-content">
+      <text class="tip-text">请先登录查看您的培训任务</text>
+      <view class="btn btn-primary" bindtap="goToLogin">去登录</view>
+    </view>
+  </view>
+
+  <view wx:elif="{{tasks.length === 0}}" class="empty-state">
+    <text class="empty-text">暂无您的培训任务</text>
+  </view>
+
+  <view wx:else class="task-list">
+    <view wx:for="{{tasks}}" wx:key="_id" class="task-card" bindtap="viewTaskDetail" data-id="{{item._id}}">
+      <view class="task-header">
+        <text class="task-title">{{item.title}}</text>
+        <text class="task-status {{item.status}}">{{item.statusText}}</text>
+      </view>
+
+      <view class="task-info">
+        <view class="info-row">
+          <text class="info-label">课程：</text>
+          <text class="info-value">{{item.courseName}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">时间：</text>
+          <text class="info-value">{{item.date}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">地点：</text>
+          <text class="info-value">{{item.location}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">单位：</text>
+          <text class="info-value">{{item.unitName}}</text>
+        </view>
+      </view>
+
+      <view class="task-footer">
+        <text class="register-count">{{item.registeredCount}}人已报名</text>
+        <view class="action-btn primary" catchtap="showQRCode" data-id="{{item._id}}">查看二维码</view>
+      </view>
+    </view>
+  </view>
+</view>
