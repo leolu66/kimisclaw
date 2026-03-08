@@ -34,9 +34,10 @@ PLATFORM_ALIASES = {
 VAULT_DIR = Path.home() / ".openclaw" / "vault"
 CREDENTIALS_FILE = VAULT_DIR / "credentials.json"
 
-# 从 Windows 凭据管理器读取主密码
+# 从 Windows 凭据管理器或 keyring 读取主密码
 def get_master_password():
-    """从 Windows 凭据管理器读取主密码"""
+    """从 Windows 凭据管理器或 keyring 读取主密码"""
+    # 方案 1: Windows 凭据管理器
     try:
         import win32cred
         cred = win32cred.CredRead(
@@ -47,7 +48,16 @@ def get_master_password():
         password = cred.get('CredentialBlob', b'').decode('utf-16-le').rstrip('\x00')
         if password:
             return password
-    except Exception as e:
+    except Exception:
+        pass
+    
+    # 方案 2: Linux keyring
+    try:
+        import keyring
+        password = keyring.get_password('openclaw-vault', 'master')
+        if password:
+            return password
+    except Exception:
         pass
     
     # 降级方案：尝试环境变量
@@ -55,7 +65,7 @@ def get_master_password():
     if env_password:
         return env_password
     
-    # 最后降级：硬编码（不推荐）
+    # 最后降级：硬编码（不推荐，仅用于测试）
     return "768211"
 
 MASTER_PASSWORD = get_master_password()
