@@ -178,6 +178,36 @@ class SpiderEngine:
             stats.end_time = datetime.now()
             logger.info(f"站点 {site_name} 采集完成: {stats.to_dict()}")
     
+    def _select_items(self, tree: html.HtmlElement, selector_config: dict) -> List[html.HtmlElement]:
+        """
+        选择列表项元素（保留元素对象，不转换为文本）
+        
+        Args:
+            tree: HTML 树
+            selector_config: 选择器配置 {type, value}
+            
+        Returns:
+            元素列表
+        """
+        sel_type = selector_config.get("type", "xpath")
+        sel_value = selector_config["value"]
+        
+        if sel_type == "xpath":
+            result = tree.xpath(sel_value)
+        elif sel_type == "css":
+            result = tree.cssselect(sel_value)
+        else:
+            logger.warning(f"未知的选择器类型: {sel_type}")
+            return []
+        
+        # 确保返回列表
+        if result is None:
+            return []
+        if not isinstance(result, list):
+            return [result] if result else []
+        
+        return result
+
     async def _crawl_list_mode(
         self, 
         config: dict, 
@@ -192,6 +222,32 @@ class SpiderEngine:
         base_url = site_config["base_url"]
         request_config = site_config.get("request", {})
         
+        # 检查采集模式
+        list_fields = list_config.get("fields", {})
+        item_selector = list_config["item_selector"]
+        
+        # 检查是否为 JSON SSR 模式
+        if item_selector.get("type") == "json_ssr":
+            logger.info(f"[{site_config['name']}] 使用 JSON SSR 提取模式")
+            async for item in self._crawl_json_ssr_mode(
+                config, stats, max_items
+            ):
+                yield item
+            return
+        
+        # 检查是否支持列表页直接提取
+        list_page_only = "title" in list_fields and list_fields["title"].get("required", False)
+        
+        if list_page_only:
+            logger.info(f"[{site_config['name']}] 使用列表页直接提取模式")
+            async for item in self._crawl_list_only_mode(
+                config, stats, max_items
+            ):
+                yield item
+            return
+        
+        # 原有详情页模式代码...
+        
         # 构建列表页 URL 列表
         list_urls = self._build_list_urls(list_config)
         items_count = 0
@@ -205,17 +261,13 @@ class SpiderEngine:
                 html_content = await self._fetch(list_url, request_config)
                 tree = html.fromstring(html_content)
                 
-                # 提取列表项
+                # 提取列表项（使用原始选择器，保留元素对象）
                 item_selector = list_config["item_selector"]
-                extractor = FieldExtractor(item_selector)
-                items = extractor.extract(tree, list_url)
+                items = self._select_items(tree, item_selector)
                 
                 if not items:
                     logger.warning(f"列表页未找到条目: {list_url}")
                     continue
-                
-                if not isinstance(items, list):
-                    items = [items]
                 
                 logger.debug(f"列表页找到 {len(items)} 个条目")
                 
@@ -315,6 +367,256 @@ class SpiderEngine:
         
         return news
     
+    async def _crawl_list_only_mode(
+        self,
+        config: dict,
+        stats: CrawlStats,
+        max_items: Optional[int],
+    ) -> AsyncGenerator[NewsItem, None]:
+        """
+        列表页直接提取模式
+        所有字段直接从列表页提取，无需访问详情页
+        """
+        site_config = config["site"]
+        list_config = config["list_page"]
+        base_url = site_config["base_url"]
+        request_config = site_config.get("request", {})
+        
+        list_urls = self._build_list_urls(list_config)
+        items_count = 0
+        
+        for list_url in list_urls:
+            if max_items and items_count >= max_items:
+                break
+            
+            try:
+                # 下载列表页
+                html_content = await self._fetch(list_url, request_config)
+                tree = html.fromstring(html_content)
+                
+                # 提取列表项（使用原始选择器，保留元素对象）
+                item_selector = list_config["item_selector"]
+                items = self._select_items(tree, item_selector)
+                
+                if not items:
+                    logger.warning(f"列表页未找到条目: {list_url}")
+                    continue
+                
+                logger.debug(f"列表页找到 {len(items)} 个条目")
+                
+                # 遍历列表项，直接从列表项提取所有字段
+                for item_elem in items:
+                    if max_items and items_count >= max_items:
+                        break
+                    
+                    try:
+                        news = self._extract_news_item_from_list_element(
+                            item_elem, list_url, list_config, site_config
+                        )
+                        
+                        if news:
+                            stats.items_extracted += 1
+                            items_count += 1
+                            yield news
+                            
+                    except Exception as e:
+                        logger.warning(f"提取条目失败: {e}")
+                        continue
+                        
+            except Exception as e:
+                logger.error(f"处理列表页失败 {list_url}: {e}")
+                stats.errors.append(str(e))
+                continue
+    
+    def _extract_news_item_from_list_element(
+        self,
+        item_elem,
+        list_url: str,
+        list_config: dict,
+        site_config: dict,
+    ) -> Optional[NewsItem]:
+        """从列表项元素提取新闻条目（列表页直接模式）"""
+        list_fields = list_config.get("fields", {})
+        
+        fields = {}
+        for field_name, field_conf in list_fields.items():
+            try:
+                extractor = FieldExtractor(field_conf)
+                fields[field_name] = extractor.extract(item_elem, list_url)
+            except ExtractionError as e:
+                logger.debug(f"提取字段 {field_name} 失败: {e}")
+                fields[field_name] = field_conf.get("default")
+        
+        # 构建 NewsItem
+        url = fields.get("link", list_url)
+        news = NewsItem(
+            title=fields.get("title", ""),
+            summary=fields.get("summary", ""),
+            author=fields.get("author", ""),
+            url=url,
+            source=site_config["name"],
+            content=fields.get("content", ""),
+            config_version=site_config.get("config_version", ""),
+        )
+        
+        # 处理发布时间
+        pub_time = fields.get("publish_time") or fields.get("update_time")
+        if pub_time:
+            if isinstance(pub_time, datetime):
+                news.publish_time = pub_time
+            elif isinstance(pub_time, str):
+                from dateutil import parser
+                try:
+                    news.publish_time = parser.parse(pub_time)
+                except:
+                    pass
+        
+        return news
+
+    async def _crawl_json_ssr_mode(
+        self,
+        config: dict,
+        stats: CrawlStats,
+        max_items: Optional[int],
+    ) -> AsyncGenerator[NewsItem, None]:
+        """
+        JSON SSR 提取模式（Vue/Nuxt 服务端渲染）
+        从 <script type="application/json"> 中提取数据
+        """
+        import json
+        import re
+        from lxml import html
+        
+        site_config = config["site"]
+        list_config = config["list_page"]
+        base_url = site_config["base_url"]
+        request_config = site_config.get("request", {})
+        
+        list_url = list_config["url"]
+        list_fields = list_config.get("fields", {})
+        
+        try:
+            # 下载页面
+            html_content = await self._fetch(list_url, request_config)
+            tree = html.fromstring(html_content)
+            
+            # 提取 JSON 数据
+            json_script = tree.xpath('//script[@type="application/json"]/text()')
+            if not json_script:
+                logger.error("未找到 SSR JSON 数据")
+                return
+            
+            data = json.loads(json_script[0])
+            
+            # 解析索引引用格式，构建对象列表
+            def resolve_ref(ref):
+                if isinstance(ref, int) and ref < len(data):
+                    return data[ref]
+                return ref
+            
+            # 查找新闻列表
+            news_list = []
+            item_selector = list_config.get("item_selector", {})
+            
+            # 检查是否有自定义 ssr_list_index
+            custom_list_index = item_selector.get("ssr_list_index")
+            
+            if custom_list_index is not None and isinstance(custom_list_index, int):
+                # 使用指定的索引位置
+                if custom_list_index < len(data):
+                    raw_list = data[custom_list_index]
+                    if isinstance(raw_list, list):
+                        news_list = [resolve_ref(r) for r in raw_list]
+            else:
+                # 查找 InfoQ 格式的 aibriefsList
+                for item in data:
+                    if isinstance(item, dict) and 'aibriefsList' in item:
+                        list_idx = item['aibriefsList']
+                        news_data = resolve_ref(list_idx)
+                        if isinstance(news_data, dict) and 'list' in news_data:
+                            list_ref = news_data['list']
+                            raw_list = resolve_ref(list_ref)
+                            if isinstance(raw_list, list):
+                                news_list = [resolve_ref(r) for r in raw_list]
+                        break
+            
+            logger.info(f"从 SSR JSON 中提取到 {len(news_list)} 条新闻")
+            
+            items_count = 0
+            for news in news_list:
+                if max_items and items_count >= max_items:
+                    break
+                
+                try:
+                    # 提取字段
+                    fields = {}
+                    for field_name, field_conf in list_fields.items():
+                        field_type = field_conf.get("type")
+                        transform = field_conf.get("transform")
+                        
+                        if field_type == "json_ssr_field":
+                            json_key = field_conf["value"]
+                            if json_key in news:
+                                value = resolve_ref(news[json_key])
+                                
+                                # 应用转换器
+                                if transform == "aibase_link":
+                                    # AiBase 链接格式: /news/{oid}
+                                    value = f"{base_url}/news/{value}"
+                                elif transform == "timestamp_seconds_to_iso":
+                                    # 秒级时间戳转 ISO
+                                    if isinstance(value, (int, float)):
+                                        value = datetime.fromtimestamp(value).isoformat()
+                                
+                                fields[field_name] = value
+                            else:
+                                fields[field_name] = field_conf.get("default")
+                        elif field_type == "constant":
+                            fields[field_name] = field_conf["value"]
+                        else:
+                            fields[field_name] = field_conf.get("default")
+                    
+                    # 构建 NewsItem
+                    url = fields.get("link", list_url)
+                    news_item = NewsItem(
+                        title=fields.get("title", ""),
+                        summary=fields.get("summary", ""),
+                        author=fields.get("author", ""),
+                        url=url,
+                        source=site_config["name"],
+                        content="",
+                        config_version=site_config.get("config_version", ""),
+                    )
+                    
+                    # 处理时间戳（支持字符串 ISO 格式）
+                    pub_time = fields.get("publish_time")
+                    if pub_time:
+                        if isinstance(pub_time, datetime):
+                            news_item.publish_time = pub_time
+                        elif isinstance(pub_time, str):
+                            from dateutil import parser
+                            try:
+                                news_item.publish_time = parser.parse(pub_time)
+                            except:
+                                pass
+                        elif isinstance(pub_time, (int, float)):
+                            if pub_time > 1e10:
+                                pub_time = pub_time / 1000
+                            news_item.publish_time = datetime.fromtimestamp(pub_time)
+                    
+                    if news_item.is_valid():
+                        stats.items_extracted += 1
+                        items_count += 1
+                        yield news_item
+                        
+                except Exception as e:
+                    logger.warning(f"提取条目失败: {e}")
+                    continue
+                    
+        except Exception as e:
+            logger.error(f"JSON SSR 模式失败: {e}")
+            stats.errors.append(str(e))
+
     async def _fetch(self, url: str, request_config: dict) -> str:
         """
         下载页面内容

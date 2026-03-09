@@ -85,7 +85,8 @@ _和用户六一对话时学到的东西，记在这里。_
 - ✅ weather-skill - 天气查询（API Key 已存 vault）
 - ✅ holiday-checker - 法定假日查询（已修复数据）
 - ✅ work-session-logger - 工作日志记录
-- ✅ ai-news-fetcher - AI新闻获取（依赖已安装）
+- ✅ **ai-news-fetcher** - AI新闻采集框架（已重写，支持7个站点）
+- ✅ ai-news-fetcher-old - 旧版AI新闻（已停用）
 - ✅ skill-creator-local - 创建新技能
 - ✅ vault - 密码箱（主密码可用，23个平台模板已初始化）
 
@@ -96,11 +97,20 @@ _和用户六一对话时学到的东西，记在这里。_
 - 项目路径：`/root/.openclaw/workspace/wechat-training-app/`
 - 文档：需求设计文档、用户故事、开发完成报告、部署指南
 
-### 新闻爬虫框架
-- 创建时间：2026-03-09
-- 项目路径：`/root/.openclaw/workspace/news-spider/`
-- 架构：配置驱动（YAML）+ 适配器模式（XPath/CSS/Regex）
-- 功能：异步采集、字段提取、多格式存储、监控告警、CLI工具
+### AI新闻采集框架（ai-news-fetcher）
+- 更新时间：2026-03-09（完全重写）
+- 项目路径：`/root/.openclaw/workspace/skills/ai-news-fetcher/`
+- 架构：配置驱动（YAML）+ 多模式提取（XPath/CSS/JSON SSR）
+- 支持站点（7个）：
+  - 36氪AI - 列表页HTML提取
+  - AiBase新闻 - JSON SSR模式
+  - InfoQ AI简报 - JSON SSR模式
+  - 机器之心 - 列表页HTML提取
+  - AI科技评论 - 列表页HTML提取
+  - 量子位 - 列表页HTML提取
+  - 智东西 - 列表页HTML提取（分页反爬）
+- 功能：异步采集、字段提取、多格式存储（JSON/CSV/Markdown）、CLI工具
+- 历史：旧版 `ai-news-fetcher` 已停用，改名为 `ai-news-fetcher-old`
 
 ## 备注
 - ngrok 隧道已配置，本地 OpenClaw 可访问

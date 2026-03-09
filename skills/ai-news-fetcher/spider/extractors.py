@@ -323,6 +323,22 @@ def _truncate(value: str, max_length: int = 200) -> str:
     return value[:max_length].rsplit(" ", 1)[0] + "..."
 
 
+def _add_year_to_date(value: str, base_url: str = "") -> str:
+    """将 MM-DD 格式转换为 YYYY-MM-DD"""
+    if not value:
+        return value
+    from datetime import datetime
+    try:
+        # 格式如 "03-08"
+        value = value.strip()
+        if len(value) == 5 and value[2] == '-':
+            current_year = datetime.now().year
+            return f"{current_year}-{value}"
+        return value
+    except:
+        return value
+
+
 # 转换器注册表
 TRANSFORMERS = {
     "absolute_url": _absolute_url,
@@ -333,6 +349,7 @@ TRANSFORMERS = {
     "extract_number": _extract_number,
     "clean_whitespace": _clean_whitespace,
     "truncate": _truncate,
+    "add_year_to_date": _add_year_to_date,
 }
 
 

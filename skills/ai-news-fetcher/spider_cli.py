@@ -64,6 +64,8 @@ def test(site_name: str, url: str, field: str, detail: bool, verbose: bool):
 def _test_list_page(config: dict, test_url: str, field: str, verbose: bool):
     """测试列表页提取"""
     import aiohttp
+    from lxml import html
+    import json
     
     list_config = config["list_page"]
     request_config = config["site"].get("request", {})
@@ -71,6 +73,12 @@ def _test_list_page(config: dict, test_url: str, field: str, verbose: bool):
     url = test_url or list_config["url"]
     
     click.echo(f"\n📃 测试列表页: {url}")
+    
+    # 检查是否为 JSON SSR 模式
+    item_selector = list_config["item_selector"]
+    if item_selector.get("type") == "json_ssr":
+        _test_json_ssr_list_page(config, url, field, verbose)
+        return
     
     async def fetch():
         async with aiohttp.ClientSession() as session:
@@ -81,17 +89,21 @@ def _test_list_page(config: dict, test_url: str, field: str, verbose: bool):
     html_content = asyncio.run(fetch())
     tree = html.fromstring(html_content)
     
-    # 测试列表项选择
-    item_selector = list_config["item_selector"]
-    extractor = FieldExtractor(item_selector)
-    items = extractor.extract(tree, url)
+    # 测试列表项选择（使用原始选择器）
+    sel_type = item_selector.get("type", "xpath")
+    sel_value = item_selector["value"]
+    
+    if sel_type == "xpath":
+        items = tree.xpath(sel_value)
+    elif sel_type == "css":
+        items = tree.cssselect(sel_value)
+    else:
+        click.echo(f"❌ 未知的选择器类型: {sel_type}")
+        return
     
     if not items:
         click.echo("❌ 未找到列表项，请检查 item_selector 配置")
         return
-    
-    if not isinstance(items, list):
-        items = [items]
     
     click.echo(f"✅ 找到 {len(items)} 个列表项")
     
@@ -117,6 +129,99 @@ def _test_list_page(config: dict, test_url: str, field: str, verbose: bool):
                 click.echo(f"  {field_name}: {value_str}")
             except Exception as e:
                 click.echo(f"  {field_name}: ❌ {e}")
+
+
+def _test_json_ssr_list_page(config: dict, url: str, field: str, verbose: bool):
+    """测试 JSON SSR 模式的列表页提取（Vue/Nuxt 服务端渲染）"""
+    import aiohttp
+    from lxml import html
+    import json
+    
+    list_config = config["list_page"]
+    request_config = config["site"].get("request", {})
+    fields_config = list_config.get("fields", {})
+    base_url = config["site"]["base_url"]
+    
+    if field:
+        if field not in fields_config:
+            click.echo(f"❌ 字段 {field} 未在配置中定义")
+            return
+        fields_config = {field: fields_config[field]}
+    
+    async def fetch():
+        async with aiohttp.ClientSession() as session:
+            headers = request_config.get("headers", {})
+            async with session.get(url, headers=headers) as resp:
+                return await resp.text()
+    
+    html_content = asyncio.run(fetch())
+    tree = html.fromstring(html_content)
+    
+    # 提取 JSON 数据
+    json_script = tree.xpath('//script[@type="application/json"]/text()')
+    if not json_script:
+        click.echo("❌ 未找到 SSR JSON 数据")
+        return
+    
+    data = json.loads(json_script[0])
+    
+    # 解析索引引用（Vue SSR 的压缩格式）
+    def resolve_ref(ref):
+        if isinstance(ref, int) and ref < len(data):
+            return data[ref]
+        return ref
+    
+    # 查找新闻列表
+    news_list = []
+    item_selector = list_config.get("item_selector", {})
+    custom_list_index = item_selector.get("ssr_list_index")
+    
+    if custom_list_index is not None and isinstance(custom_list_index, int):
+        if custom_list_index < len(data):
+            raw_list = data[custom_list_index]
+            if isinstance(raw_list, list):
+                news_list = [resolve_ref(r) for r in raw_list]
+    else:
+        # 查找 InfoQ 格式的 aibriefsList
+        for item in data:
+            if isinstance(item, dict) and 'aibriefsList' in item:
+                list_idx = item['aibriefsList']
+                news_data = resolve_ref(list_idx)
+                if isinstance(news_data, dict) and 'list' in news_data:
+                    list_ref = news_data['list']
+                    raw_list = resolve_ref(list_ref)
+                    if isinstance(raw_list, list):
+                        news_list = [resolve_ref(r) for r in raw_list]
+                break
+    
+    click.echo(f"✅ 从 SSR JSON 中提取到 {len(news_list)} 条新闻")
+    
+    # 显示前3条
+    show_count = min(3, len(news_list))
+    for i, news in enumerate(news_list[:show_count], 1):
+        click.echo(f"\n--- 条目 {i} ---")
+        for field_name, field_conf in fields_config.items():
+            field_type = field_conf.get("type")
+            transform = field_conf.get("transform")
+            
+            if field_type == "json_ssr_field":
+                json_key = field_conf["value"]
+                if json_key in news:
+                    value = resolve_ref(news[json_key])
+                    
+                    # 应用转换器
+                    if transform == "aibase_link":
+                        value = f"{base_url}/news/{value}"
+                    elif transform == "timestamp_seconds_to_iso":
+                        if isinstance(value, (int, float)):
+                            value = value.isoformat() if hasattr(value, 'isoformat') else str(value)
+                    
+                    value_str = str(value)[:100] + "..." if len(str(value)) > 100 else str(value)
+                    click.echo(f"  {field_name}: {value_str}")
+                else:
+                    click.echo(f"  {field_name}: (未找到)")
+            elif field_type == "constant":
+                click.echo(f"  {field_name}: {field_conf['value']}")
 
 
 def _test_detail_page(config: dict, test_url: str, field: str, verbose: bool):
