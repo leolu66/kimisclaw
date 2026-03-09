@@ -89,6 +89,19 @@ _和用户六一对话时学到的东西，记在这里。_
 - ✅ skill-creator-local - 创建新技能
 - ✅ vault - 密码箱（主密码可用，23个平台模板已初始化）
 
+## 项目成果
+
+### 培训管理系统（微信小程序）
+- 完成时间：2026-03-08
+- 项目路径：`/root/.openclaw/workspace/wechat-training-app/`
+- 文档：需求设计文档、用户故事、开发完成报告、部署指南
+
+### 新闻爬虫框架
+- 创建时间：2026-03-09
+- 项目路径：`/root/.openclaw/workspace/news-spider/`
+- 架构：配置驱动（YAML）+ 适配器模式（XPath/CSS/Regex）
+- 功能：异步采集、字段提取、多格式存储、监控告警、CLI工具
+
 ## 备注
 - ngrok 隧道已配置，本地 OpenClaw 可访问
 - 46 个技能已下载到 `/root/.openclaw/workspace/skills/`
