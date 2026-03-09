@@ -1,0 +1,16 @@
+<!-- 单位编辑页 -->
+<view class="container">
+  <view class="form-card">
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>单位名称
+      </label>
+      <input class="form-input" placeholder="请输入单位名称，如：中国石油北京分公司" value="{{form.name}}" bindinput="onNameInput" />
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn btn-primary" bindtap="saveUnit">保存</button>
+    <button class="btn btn-default" bindtap="cancel">取消</button>
+  </view>
+</view>

@@ -1,0 +1,36 @@
+<!-- 老师编辑页 -->
+<view class="container">
+  <view class="form-card">
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>老师姓名
+      </label>
+      <input class="form-input" placeholder="请输入老师姓名" value="{{form.name}}" bindinput="onNameInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">职称/头衔</label>
+      <input class="form-input" placeholder="如：高级讲师、教授等" value="{{form.title}}" bindinput="onTitleInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">老师简介</label>
+      <textarea class="form-textarea" placeholder="请输入老师简介" value="{{form.bio}}" bindinput="onBioInput" maxlength="500" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">头像</label>
+      <view class="avatar-upload" bindtap="chooseAvatar">
+        <image wx:if="{{form.avatar}}" class="avatar-preview" src="{{form.avatar}}" mode="aspectFill" />
+        <view wx:else class="avatar-placeholder">
+          <text>点击上传头像</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn btn-primary" bindtap="saveTeacher">保存</button>
+    <button class="btn btn-default" bindtap="cancel">取消</button>
+  </view>
+</view>

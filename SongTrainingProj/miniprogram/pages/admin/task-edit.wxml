@@ -1,0 +1,99 @@
+<!-- 任务编辑页 -->
+<view class="container">
+  <view class="form-card">
+    <!-- 培训标题 -->
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>培训标题
+      </label>
+      <input class="form-input" placeholder="请输入培训标题" value="{{form.title}}" bindinput="onTitleInput" />
+    </view>
+
+    <!-- 课程选择 -->
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>选择课程
+      </label>
+      <picker mode="selector" range="{{courses}}" range-key="name" bindchange="onCourseChange">
+        <view class="picker {{form.courseId ? '' : 'placeholder'}}">
+          {{form.courseName || '请选择课程'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 老师选择 -->
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>选择老师
+      </label>
+      <picker mode="selector" range="{{teachers}}" range-key="name" bindchange="onTeacherChange">
+        <view class="picker {{form.teacherId ? '' : 'placeholder'}}">
+          {{form.teacherName || '请选择老师'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 单位选择 -->
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>选择单位
+      </label>
+      <picker mode="selector" range="{{units}}" range-key="name" bindchange="onUnitChange">
+        <view class="picker {{form.unitId ? '' : 'placeholder'}}">
+          {{form.unitName || '请选择单位'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 培训日期 -->
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>培训日期
+      </label>
+      <picker mode="multiSelector" range="{{dateRange}}" value="{{dateIndex}}" bindchange="onDateChange" bindcolumnchange="onDateColumnChange">
+        <view class="picker {{form.date ? '' : 'placeholder'}}">
+          {{form.date || '请选择日期时间'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 培训地点 -->
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>培训地点
+      </label>
+      <input class="form-input" placeholder="请输入培训地点" value="{{form.location}}" bindinput="onLocationInput" />
+    </view>
+
+    <!-- 计划人数 -->
+    <view class="form-group">
+      <label class="form-label">计划人数</label>
+      <input class="form-input" type="number" placeholder="请输入计划人数" value="{{form.capacity}}" bindinput="onCapacityInput" />
+    </view>
+
+    <!-- 调查模板 -->
+    <view class="form-group">
+      <label class="form-label">关联调查模板</label>
+      <picker mode="selector" range="{{surveys}}" range-key="name" bindchange="onSurveyChange">
+        <view class="picker {{form.surveyTemplateId ? '' : 'placeholder'}}">
+          {{form.surveyName || '请选择调查模板（可选）'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 状态 -->
+    <view class="form-group" wx:if="{{isEdit}}">
+      <label class="form-label">培训状态</label>
+      <picker mode="selector" range="{{statusOptions}}" range-key="label" bindchange="onStatusChange">
+        <view class="picker">
+          {{form.statusText}}
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn btn-primary" bindtap="saveTask">保存</button>
+    <button class="btn btn-default" bindtap="cancel">取消</button>
+  </view>
+</view>

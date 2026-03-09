@@ -1,0 +1,32 @@
+<!-- 老师列表页 -->
+<view class="container">
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索老师姓名" value="{{keyword}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <scroll-view scroll-y class="list-container">
+    <view wx:if="{{teachers.length === 0}}" class="empty-state">
+      <text class="empty-text">暂无老师数据</text>
+      <view class="btn btn-primary" bindtap="addTeacher" style="margin-top: 40rpx;">添加老师</view>
+    </view>
+
+    <view wx:for="{{teachers}}" wx:key="_id" class="teacher-card">
+      <image class="teacher-avatar" src="{{item.avatar || '/images/default-avatar.png'}}" mode="aspectFill" />
+      <view class="teacher-info">
+        <view class="teacher-name">{{item.name}}</text>
+        <view class="teacher-title" wx:if="{{item.title}}">{{item.title}}</view>
+        <view class="teacher-bio" wx:if="{{item.bio}}">{{item.bio}}</view>
+      </view>
+      
+      <view class="teacher-actions">
+        <view class="action-btn edit" bindtap="editTeacher" data-id="{{item._id}}">编辑</view>
+        <view class="action-btn delete" bindtap="deleteTeacher" data-id="{{item._id}}">删除</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<view class="fab" bindtap="addTeacher">
+  <text class="fab-icon">+</text>
+</view>

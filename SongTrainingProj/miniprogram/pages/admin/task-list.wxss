@@ -1,0 +1,201 @@
+/* 任务列表样式 */
+
+page {
+  background: #f5f5f5;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  display: flex;
+  padding: 20rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #e5e5e5;
+  gap: 20rpx;
+}
+
+.filter-item {
+  flex: 1;
+}
+
+.picker {
+  height: 72rpx;
+  line-height: 72rpx;
+  padding: 0 24rpx;
+  background: #f5f5f5;
+  border-radius: 36rpx;
+  font-size: 28rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.filter-input {
+  height: 72rpx;
+  padding: 0 24rpx;
+  background: #f5f5f5;
+  border-radius: 36rpx;
+  font-size: 28rpx;
+}
+
+/* 任务列表 */
+.task-list {
+  flex: 1;
+  padding: 20rpx;
+}
+
+.task-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.task-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.task-status {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.task-status.planned {
+  background: #e6f7ed;
+  color: #07c160;
+}
+
+.task-status.ongoing {
+  background: #fff2e8;
+  color: #fa8c16;
+}
+
+.task-status.completed {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.task-status.cancelled {
+  background: #fff1f0;
+  color: #f5222d;
+}
+
+.task-info {
+  margin-bottom: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 12rpx;
+  font-size: 28rpx;
+}
+
+.info-label {
+  color: #999;
+  width: 120rpx;
+}
+
+.info-value {
+  color: #333;
+  flex: 1;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.register-info {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.register-count {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #07c160;
+}
+
+.task-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.action-btn {
+  padding: 12rpx 24rpx;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  background: #f5f5f5;
+  color: #666;
+}
+
+.action-btn.primary {
+  background: #e6f7ed;
+  color: #07c160;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 150rpx 40rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.load-more {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 26rpx;
+}
+
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 180rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: #07c160;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 20rpx rgba(7, 193, 96, 0.4);
+  z-index: 100;
+}
+
+.fab-icon {
+  color: #fff;
+  font-size: 48rpx;
+  font-weight: bold;
+}

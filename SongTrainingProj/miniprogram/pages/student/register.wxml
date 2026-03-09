@@ -1,0 +1,68 @@
+<!-- 学员注册页 -->
+<view class="container">
+  <view class="header">
+    <view class="header-title">培训报名</view>
+    <view class="header-subtitle" wx:if="{{task}}">{{task.title}}</view>
+  </view>
+
+  <view class="form-card">
+    <!-- 微信信息 -->
+    <view class="wechat-section" wx:if="{{!hasUserInfo}}">
+      <view class="section-title">微信授权</view>
+      <button class="wechat-btn" bindtap="getUserProfile">
+        <text class="wechat-icon">💬</text>
+        <text>点击授权微信信息</text>
+      </button>
+    </view>
+
+    <view class="wechat-info" wx:else>
+      <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+      <text class="user-nickname">{{userInfo.nickName}}</text>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="section-title">基本信息</view>
+
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>姓名
+      </label>
+      <input class="form-input" placeholder="请输入您的真实姓名" value="{{form.name}}" bindinput="onNameInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">
+        <text class="required">*</text>手机号
+      </label>
+      <input class="form-input" type="number" placeholder="请输入手机号" value="{{form.phone}}" bindinput="onPhoneInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">邮箱</label>
+      <input class="form-input" placeholder="请输入邮箱（可选）" value="{{form.email}}" bindinput="onEmailInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">微信号</label>
+      <input class="form-input" placeholder="请输入微信号（可选）" value="{{form.wechatId}}" bindinput="onWechatIdInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">设置密码</label>
+      <input class="form-input" password placeholder="设置登录密码（可选）" value="{{form.password}}" bindinput="onPasswordInput" />
+    </view>
+
+    <view class="form-group">
+      <label class="form-label">所属单位</label>
+      <input class="form-input" disabled value="{{unitName}}" />
+    </view>
+  </view>
+
+  <view class="btn-group">
+    <button class="btn btn-primary" bindtap="submitRegister">确认报名</button>
+  </view>
+
+  <view class="login-link">
+    已有账号？<text bindtap="goToLogin">去登录</text>
+  </view>
+</view>

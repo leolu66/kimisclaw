@@ -1,0 +1,62 @@
+{
+  "pages": [
+    "pages/admin/index",
+    "pages/admin/course-list",
+    "pages/admin/course-edit",
+    "pages/admin/teacher-list",
+    "pages/admin/teacher-edit",
+    "pages/admin/unit-list",
+    "pages/admin/unit-edit",
+    "pages/admin/task-list",
+    "pages/admin/task-edit",
+    "pages/admin/task-detail",
+    "pages/admin/survey-list",
+    "pages/admin/survey-edit",
+    "pages/teacher/task-list",
+    "pages/teacher/qr-display",
+    "pages/student/scan",
+    "pages/student/register",
+    "pages/student/login",
+    "pages/student/my-tasks",
+    "pages/student/survey-fill"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "培训管理系统",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/admin/index",
+        "text": "管理",
+        "iconPath": "images/icon_admin.png",
+        "selectedIconPath": "images/icon_admin_selected.png"
+      },
+      {
+        "pagePath": "pages/teacher/task-list",
+        "text": "我的培训",
+        "iconPath": "images/icon_teacher.png",
+        "selectedIconPath": "images/icon_teacher_selected.png"
+      },
+      {
+        "pagePath": "pages/student/my-tasks",
+        "text": "我的",
+        "iconPath": "images/icon_student.png",
+        "selectedIconPath": "images/icon_student_selected.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "submitSurvey",
+  "version": "1.0.0",
+  "description": "提交调查表",
+  "main": "index.js",
+  "dependencies": {}
+}

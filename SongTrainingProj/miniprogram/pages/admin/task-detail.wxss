@@ -1,0 +1,183 @@
+/* 任务详情样式 */
+
+page {
+  background: #f5f5f5;
+  padding-bottom: 140rpx;
+}
+
+.container {
+  padding: 20rpx;
+}
+
+.detail-card {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.detail-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.detail-status {
+  font-size: 26rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.detail-status.planned {
+  background: #e6f7ed;
+  color: #07c160;
+}
+
+.detail-status.ongoing {
+  background: #fff2e8;
+  color: #fa8c16;
+}
+
+.detail-status.completed {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.detail-status.cancelled {
+  background: #fff1f0;
+  color: #f5222d;
+}
+
+.detail-section {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.detail-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-count {
+  font-size: 28rpx;
+  color: #07c160;
+}
+
+.section-action {
+  font-size: 28rpx;
+  color: #07c160;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 16rpx;
+  font-size: 28rpx;
+}
+
+.info-label {
+  color: #999;
+  width: 160rpx;
+}
+
+.info-value {
+  color: #333;
+  flex: 1;
+}
+
+/* 二维码 */
+.qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx 0;
+}
+
+.qr-image {
+  width: 400rpx;
+  height: 400rpx;
+  background: #f5f5f5;
+}
+
+.qr-tip {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.qr-generate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0;
+}
+
+.generate-tip {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 30rpx;
+}
+
+/* 底部操作栏 */
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1rpx solid #e5e5e5;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: #f5f5f5;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  color: #666;
+}
+
+.action-btn.primary {
+  background: #07c160;
+  color: #fff;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 60rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: #07c160;
+  color: #fff;
+}

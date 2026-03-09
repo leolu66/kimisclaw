@@ -1,0 +1,26 @@
+<!-- 单位列表页 -->
+<view class="container">
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索单位名称" value="{{keyword}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <scroll-view scroll-y class="list-container">
+    <view wx:if="{{units.length === 0}}" class="empty-state">
+      <text class="empty-text">暂无单位数据</text>
+      <view class="btn btn-primary" bindtap="addUnit" style="margin-top: 40rpx;">添加单位</view>
+    </view>
+
+    <view wx:for="{{units}}" wx:key="_id" class="unit-card">
+      <view class="unit-name">{{item.name}}</view>
+      <view class="unit-actions">
+        <view class="action-btn edit" bindtap="editUnit" data-id="{{item._id}}">编辑</view>
+        <view class="action-btn delete" bindtap="deleteUnit" data-id="{{item._id}}">删除</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<view class="fab" bindtap="addUnit">
+  <text class="fab-icon">+</text>
+</view>

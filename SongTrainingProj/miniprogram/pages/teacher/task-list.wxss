@@ -1,0 +1,140 @@
+/* 老师端任务列表样式 */
+
+page {
+  background: #f5f5f5;
+}
+
+.container {
+  padding: 20rpx;
+}
+
+.login-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.tip-content {
+  text-align: center;
+}
+
+.tip-text {
+  display: block;
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 40rpx;
+}
+
+.btn {
+  display: inline-block;
+  padding: 24rpx 80rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: #07c160;
+  color: #fff;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+}
+
+.task-list {
+  padding-bottom: 40rpx;
+}
+
+.task-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.task-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.task-status {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.task-status.planned {
+  background: #e6f7ed;
+  color: #07c160;
+}
+
+.task-status.ongoing {
+  background: #fff2e8;
+  color: #fa8c16;
+}
+
+.task-status.completed {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.task-info {
+  margin-bottom: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 12rpx;
+  font-size: 28rpx;
+}
+
+.info-label {
+  color: #999;
+  width: 120rpx;
+}
+
+.info-value {
+  color: #333;
+  flex: 1;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.register-count {
+  font-size: 28rpx;
+  color: #07c160;
+  font-weight: 500;
+}
+
+.action-btn {
+  padding: 12rpx 24rpx;
+  background: #e6f7ed;
+  color: #07c160;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+}

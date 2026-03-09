@@ -1,0 +1,7 @@
+{
+  "name": "getSurveyStats",
+  "version": "1.0.0",
+  "description": "获取调查结果统计",
+  "main": "index.js",
+  "dependencies": {}
+}

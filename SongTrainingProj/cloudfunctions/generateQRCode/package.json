@@ -1,0 +1,7 @@
+{
+  "name": "generateQRCode",
+  "version": "1.0.0",
+  "description": "生成小程序二维码",
+  "main": "index.js",
+  "dependencies": {}
+}

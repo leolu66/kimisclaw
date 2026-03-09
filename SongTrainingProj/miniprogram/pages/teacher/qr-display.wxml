@@ -1,0 +1,33 @@
+<!-- 二维码展示页 - 全屏适合投影 -->
+<view class="qr-container">
+  <view class="qr-content">
+    <view class="task-info" wx:if="{{task}}">
+      <view class="task-title">{{task.title}}</view>
+      <view class="task-detail">
+        <text>{{task.courseName}}</text>
+        <text class="divider">|</text>
+        <text>{{task.teacherName}}</text>
+      </view>
+      <view class="task-location">{{task.location}} {{task.date}}</view>
+    </view>
+
+    <view class="qr-wrapper">
+      <image wx:if="{{qrCodeUrl}}" class="qr-image" src="{{qrCodeUrl}}" mode="aspectFit" show-menu-by-longpress />
+      <view wx:else class="qr-placeholder">
+        <text>二维码加载中...</text>
+      </view>
+    </view>
+
+    <view class="qr-tips">
+      <view class="tip-title">扫码报名培训</view>
+      <view class="tip-desc">微信扫一扫，快速完成报名</view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar" wx:if="{{showActions}}">
+    <view class="action-btn" bindtap="saveQRCode">保存到相册</view>
+    <view class="action-btn primary" bindtap="shareQRCode">分享</view>
+    <view class="action-btn" bindtap="toggleFullScreen">{{isFullScreen ? '退出全屏' : '全屏展示'}}</view>
+  </view>
+</view>
