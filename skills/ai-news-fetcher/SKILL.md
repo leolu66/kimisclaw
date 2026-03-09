@@ -10,7 +10,7 @@ description: |
   - "AI动态"
   - "有什么AI新闻"
   
-  支持从36氪、AiBase、InfoQ、机器之心、AI科技评论、量子位、智东西等国内主流AI媒体获取新闻。
+  支持从36氪、AiBase、InfoQ、AI科技评论、量子位、智东西等国内主流AI媒体获取新闻。
 version: 2.0
 ---
 
@@ -25,7 +25,6 @@ version: 2.0
 | **36氪AI** | 36kr.com | 列表页HTML提取 |
 | **AiBase新闻** | aibase.cn | JSON SSR模式 |
 | **InfoQ AI简报** | infoq.cn | JSON SSR模式 |
-| **机器之心** | jiqizhixin.com | 列表页HTML提取 |
 | **AI科技评论** | leiphone.com | 列表页HTML提取 |
 | **量子位** | qbitai.com | 列表页HTML提取 |
 | **智东西** | zhidx.com | 列表页HTML提取 |
@@ -156,8 +155,9 @@ ai-news-fetcher/
 │   ├── 36kr.yaml           # 36氪配置
 │   ├── aibase.yaml         # AiBase配置
 │   ├── infoq.yaml          # InfoQ配置
-│   ├── jiqizhixin.yaml     # 机器之心配置
 │   ├── leiphone.yaml       # AI科技评论配置
+│   ├── qbitai.yaml         # 量子位配置
+│   └── zhidx.yaml          # 智东西配置
 │   ├── qbitai.yaml         # 量子位配置
 │   └── zhidx.yaml          # 智东西配置
 ├── main.py                 # 主入口（支持命令行参数）
