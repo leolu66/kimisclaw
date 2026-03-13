@@ -201,8 +201,60 @@ openclaw --version
 
 ---
 
+## 技术经验记录
+
+### NetNotes 标签系统开发（2026-03-14）
+
+**需求**：为 NetNotes 技能添加标签系统，支持随用随建（无需预定义标签）
+
+**数据库设计**：
+```sql
+-- 标签表
+CREATE TABLE tags (
+    id INTEGER PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 关联表（多对多）
+CREATE TABLE article_tags (
+    article_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (article_id, tag_id),
+    FOREIGN KEY (article_id) REFERENCES articles(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+```
+
+**核心实现**：
+```python
+def get_or_create_tag(name: str) -> int:
+    """获取标签ID，不存在则创建"""
+    cursor.execute('SELECT id FROM tags WHERE name = ?', (name,))
+    result = cursor.fetchone()
+    if result:
+        return result[0]
+    else:
+        cursor.execute('INSERT INTO tags (name) VALUES (?)', (name,))
+        return cursor.lastrowid
+```
+
+**SQLite 并发问题解决**：
+- 问题：`database is locked` 错误
+- 原因：多连接并发访问
+- 解决：`sqlite3.connect(DB_PATH, timeout=30)`
+
+**关键代码变更**：
+- `tag_manager.py` [新增]：标签CRUD操作
+- `save_article.py` [修改]：`--tags` 参数支持
+
+---
+
 ## 备注
 - ngrok 隧道已配置，本地 OpenClaw 可访问
 - 46 个技能已下载到 `/root/.openclaw/workspace/skills/`
 - Windows 专用技能在 Linux 云端无法运行
 - todo-manager 技能已升级，支持稳定的 1-99 编号系统
+- **NetNotes 技能已完成标签系统，支持随用随建标签**
