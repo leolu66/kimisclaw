@@ -3,7 +3,7 @@ name: netnotes
 description: |
   互联网笔记本（NetNotes）- 网页内容收集与管理系统。
   用于抓取网页文章、自动分类、保存为 Markdown 并建立索引数据库。
-  
+
   触发场景：
   - "保存这篇文章" / "收藏这个网页"
   - "抓取 https://..."
@@ -12,11 +12,13 @@ description: |
   - "帮我整理这篇文章到 AI/运营商/管理 等分类"
   - "给这篇文章打标签"
   - "按标签搜索"
-  
+  - "查询文章" / "搜索笔记" / "查找文章"
+
   功能：
   - 支持普通 HTTP 抓取和 Playwright 动态渲染（反爬）
   - 自动分类到 6 个专题笔记本：AI、运营商、管理、社会生活、技术其他、其他
   - 标签系统：多标签管理、按标签检索
+  - 组合查询：分类+标签+关键词+日期范围自由组合
   - 生成 100 字内文章摘要
   - SQLite 数据库记录入库信息
 ---
@@ -40,7 +42,8 @@ netnotes/
 │   ├── fetch_article.py      # 网页抓取
 │   ├── classify_article.py   # 自动分类
 │   ├── save_article.py       # 保存和入库
-│   └── tag_manager.py        # 标签管理
+│   ├── tag_manager.py        # 标签管理
+│   └── search.py             # 组合查询（NEW）
 └── articles.db               # SQLite 数据库
 ```
 
@@ -137,6 +140,81 @@ python scripts/tag_manager.py search "AI,教程" --all
 
 ```bash
 python scripts/tag_manager.py untag <文章ID> "标签名"
+```
+
+## 组合查询（NEW）
+
+使用 `search.py` 进行多条件组合查询，支持分类、标签、关键词、日期范围自由组合。
+
+### 基础查询
+
+```bash
+# 按分类查询
+python scripts/search.py --category AI
+
+# 按标签查询
+python scripts/search.py --tags OpenClaw
+
+# 按关键词查询（标题/摘要/URL）
+python scripts/search.py --keyword "原理"
+
+# 按日期范围查询
+python scripts/search.py --from 2026-03-01 --to 2026-03-14
+
+# 最近7天的文章
+python scripts/search.py --days 7
+```
+
+### 组合查询
+
+```bash
+# AI分类 + OpenClaw标签
+python scripts/search.py -c AI --tags OpenClaw
+
+# AI分类 + 教程标签 + 关键词"底层"
+python scripts/search.py -c AI --tags 教程 -k 底层
+
+# 最近30天 + 管理分类 + 关键词"领导力"
+python scripts/search.py --days 30 -c 管理 -k 领导力
+```
+
+### 输出选项
+
+```bash
+# 显示详细信息（URL、摘要）
+python scripts/search.py -c AI -d
+
+# 输出JSON格式
+python scripts/search.py --tags OpenClaw --json
+
+# 限制结果数量
+python scripts/search.py -c AI -n 10
+```
+
+### 交互模式（查看文章）
+
+```bash
+# 查询后进入交互模式，可输入编号查看文章
+python scripts/search.py -c AI -i
+
+# 输出示例：
+# ====================================================================================================
+# 找到 2 篇文章
+# ====================================================================================================
+#
+# [1] OpenClaw让我看到：从指令控制到意图交互...
+#     分类: AI | 日期: 2026-03-13 16:19:23
+#     标签: OpenClaw, 认知隐形
+#
+# [2] 【深度解剖】OpenClaw 底层原理全解析...
+#     分类: AI | 日期: 2026-03-13 15:54:57
+#     标签: 架构, 教程, AI工具
+#
+# ----------------------------------------------------------------------------------------------------
+# 输入编号查看文章（如: 1,2,3），或输入 'q' 退出
+#
+# > 1,2
+# （将依次打开选中的文章）
 ```
 
 ## 完整工作流示例

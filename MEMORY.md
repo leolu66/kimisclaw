@@ -258,3 +258,4 @@ def get_or_create_tag(name: str) -> int:
 - Windows 专用技能在 Linux 云端无法运行
 - todo-manager 技能已升级，支持稳定的 1-99 编号系统
 - **NetNotes 技能已完成标签系统，支持随用随建标签**
+- **NetNotes 已保存8篇AI文章**（6组新闻精选 + 2篇OpenClaw专题）
