@@ -85,10 +85,11 @@ _和用户六一对话时学到的东西，记在这里。_
 - ✅ weather-skill - 天气查询（API Key 已存 vault）
 - ✅ holiday-checker - 法定假日查询（已修复数据）
 - ✅ work-session-logger - 工作日志记录
-- ✅ **ai-news-fetcher** - AI新闻采集框架（已重写，支持7个站点）
+- ✅ **ai-news-fetcher** - AI新闻采集框架（已重写，支持6个站点）
 - ✅ ai-news-fetcher-old - 旧版AI新闻（已停用）
 - ✅ skill-creator-local - 创建新技能
 - ✅ vault - 密码箱（主密码可用，23个平台模板已初始化）
+- ✅ **departure-time-calculator** - 几点出发（2026-03-11新建）
 
 ## 项目成果
 
@@ -101,18 +102,107 @@ _和用户六一对话时学到的东西，记在这里。_
 - 更新时间：2026-03-09（完全重写）
 - 项目路径：`/root/.openclaw/workspace/skills/ai-news-fetcher/`
 - 架构：配置驱动（YAML）+ 多模式提取（XPath/CSS/JSON SSR）
-- 支持站点（7个）：
+- 支持站点（6个）：
   - 36氪AI - 列表页HTML提取
   - AiBase新闻 - JSON SSR模式
   - InfoQ AI简报 - JSON SSR模式
-  - 机器之心 - 列表页HTML提取
   - AI科技评论 - 列表页HTML提取
   - 量子位 - 列表页HTML提取
   - 智东西 - 列表页HTML提取（分页反爬）
 - 功能：异步采集、字段提取、多格式存储（JSON/CSV/Markdown）、CLI工具
 - 历史：旧版 `ai-news-fetcher` 已停用，改名为 `ai-news-fetcher-old`
 
+### 几点出发（departure-time-calculator）
+- 创建时间：2026-03-11
+- 项目路径：`/root/.openclaw/workspace/skills/departure-time-calculator/`
+- 功能：根据预设路线计算出差最迟出发时间
+- 配置：
+  - 地点：南京家、南京总部、北京宿舍、北京公司、禄口机场、大兴机场等
+  - 路线：8条预设路线（北京4条 + 南京4条）
+  - 忙时定义：早高峰7:00-9:30，晚高峰17:00-19:30
+  - 缓冲时间：飞机提前45分钟，高铁提前15分钟
+- 使用方式：`python scripts/calculate_departure.py "从北京宿舍去大兴机场，17:30的飞机"`
+- 输出：路线详情、行程耗时、最迟出发时间
+
+---
+
+## 技术经验记录
+
+### OpenClaw Windows 更新失败处理（2026-03-09）
+
+**现象**：更新 OpenClaw v3.8 报错 `EBUSY: resource busy or locked`
+
+```
+npm error EBUSY: resource busy or locked, rename 
+'C:\Users\luzhe\AppData\Roaming\npm\node_modules\openclaw' -> 
+'C:\Users\luzhe\AppData\Roaming\npm\node_modules\.openclaw-3AOOlKhh'
+```
+
+**原因分析**：
+1. OpenClaw 进程正在运行（文件被占用）
+2. 杀毒软件锁定文件
+3. 之前更新残留临时文件
+
+**无效方案**：
+- 关闭 Control UI 后重试
+- `npm cache clean --force`
+- 删除临时文件夹
+
+**最终解决方案**：
+```powershell
+# 1. 完全退出 OpenClaw（关闭 Control UI 和所有终端）
+
+# 2. 卸载旧版本
+npm uninstall -g openclaw
+
+# 3. 清理缓存
+npm cache clean --force
+
+# 4. 安装最新版本
+npm install -g openclaw
+
+# 5. 验证
+openclaw --version
+```
+
+**重要确认**：
+- ✅ Workspace 不会被覆盖（位于 `C:\Users\luzhe\.openclaw\workspace-main`）
+- ✅ 配置文件保留（`C:\Users\luzhe\.openclaw\config.json`）
+- ✅ 只有程序文件被替换
+
+**数据安全边界**：
+| 位置 | 内容 | 重装影响 |
+|------|------|---------|
+| `.openclaw\workspace-main` | Workspace（技能、记忆等） | ✅ 保留 |
+| `.openclaw\config.json` | 用户配置 | ✅ 保留 |
+| `npm\node_modules\openclaw` | 程序文件 | ❌ 被替换 |
+
+---
+
+## 技术经验记录
+
+### todo-manager 编号系统升级（2026-03-13）
+
+**问题**：原编号系统按列表顺序动态分配，任务完成后编号变化，导致引用错位
+
+**解决方案**：双层编号机制
+- **待办编号**：[1]~[99] - 当前 pending 任务使用
+- **归档编号**：[YYMMDD-N] - 已完成/取消的任务（如 260313-2）
+
+**实现要点**：
+1. 1-99 编号池，pending 任务占用
+2. 任务完成/取消后，原编号回收，可被新任务复用（分配最小可用编号）
+3. 归档格式：YYMMDD-原编号，便于追溯历史
+
+**关键代码变更**：
+- `_allocateTodoNumber()`：遍历 1-99，返回第一个未被 pending 任务占用的编号
+- `_releaseTodoNumber()`：生成 `YYMMDD-原编号` 格式的归档编号
+- `completeTask()/cancelTask()`：支持添加备注，自动设置归档编号
+
+---
+
 ## 备注
 - ngrok 隧道已配置，本地 OpenClaw 可访问
 - 46 个技能已下载到 `/root/.openclaw/workspace/skills/`
 - Windows 专用技能在 Linux 云端无法运行
+- todo-manager 技能已升级，支持稳定的 1-99 编号系统

@@ -1,0 +1,23 @@
+history:
+- id: '20260311_172748'
+  timestamp: '2026-03-11 17:27:48'
+  query: 从家去禄口机场，17:30的飞机
+  route_id: nanjing_home_to_lukou_airport
+  from_name: 家
+  to_name: 禄口机场
+  used_count: 2
+  last_used: '2026-03-11 17:40:52'
+  departure_time: '15:15'
+  arrival_time: '17:30'
+- id: '20260311_152817'
+  timestamp: '2026-03-11 15:28:17'
+  query: 从北京宿舍去大兴机场，17:30的飞机
+  route_id: beijing_dorm_to_daxing_airport
+  from_name: 北京宿舍
+  to_name: 大兴机场
+  departure_time: '15:45'
+  arrival_time: '17:30'
+  transport_type: flight
+  used_count: 8
+  last_used: '2026-03-11 22:44:44'
+  query_type: reverse

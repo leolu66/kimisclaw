@@ -1,0 +1,80 @@
+# 添加新路线模板
+# 复制此模板，修改对应字段即可添加新路线
+
+# ========== 模板说明 ==========
+# 1. 先在 locations.yaml 中添加新地点（如果还没有）
+# 2. 复制下面的模板，粘贴到 routes.yaml 末尾
+# 3. 修改模板中的内容
+# 4. 在 scripts/calculate_departure.py 的 location_map 中添加关键词映射
+
+# ========== 路线模板 ==========
+
+# {路线描述，如：广州住处 → 白云机场}
+{route_id}_to_{destination_id}:
+  name: "{显示名称，如：广州住处 → 白云机场}"
+  from: "{出发地点ID，如：guangzhou_home}"
+  to: "{目的地点ID，如：guangzhou_baiyun_airport}"
+  transport_type: "flight"  # flight=飞机, train=高铁
+  
+  # 可选：如果涉及机场大巴等有时刻表的交通，添加时刻表
+  # note: "机场大巴每小时40分发车"
+  # bus_schedule: ["05:40", "06:40", "07:40", ...]
+  
+  segments:
+    # 第1段行程
+    - from: "{起点名称}"
+      to: "{终点名称}"
+      mode: "{交通方式，如：打车、地铁、机场大巴}"
+      idle: {闲时分钟}
+      busy: {忙时分钟}
+      wait: {等待分钟}
+    
+    # 第2段行程（如果有）
+    # - from: "..."
+    #   to: "..."
+    #   mode: "..."
+    #   idle: ...
+    #   busy: ...
+    #   wait: ...
+  
+  buffer:
+    flight: 45  # 飞机提前截止值机时间
+    train: 15   # 高铁提前停止检票时间
+
+
+# ========== 扩展示例：广州 → 南京 ==========
+
+# 1. 首先在 locations.yaml 中添加：
+#   guangzhou_home:
+#     name: "广州住处"
+#     city: "广州"
+#     address: "具体地址"
+#     type: "residence"
+#
+#   guangzhou_baiyun_airport:
+#     name: "白云机场"
+#     city: "广州"
+#     address: "广州白云国际机场"
+#     type: "airport"
+
+# 2. 然后在 routes.yaml 中添加：
+#   guangzhou_home_to_baiyun_airport:
+#     name: "广州住处 → 白云机场"
+#     from: "guangzhou_home"
+#     to: "guangzhou_baiyun_airport"
+#     transport_type: "flight"
+#     segments:
+#       - from: "广州住处"
+#         to: "白云机场"
+#         mode: "地铁"
+#         idle: 60
+#         busy: 75
+#         wait: 10
+#     buffer:
+#       flight: 45
+#       train: 15
+
+# 3. 最后在 calculate_departure.py 的 location_map 中添加：
+#   '广州': 'guangzhou_home',
+#   '广州住处': 'guangzhou_home',
+#   '白云机场': 'guangzhou_baiyun_airport',

@@ -33,6 +33,7 @@ class NewsItem:
     # 元数据
     crawled_at: datetime = field(default_factory=datetime.now)
     config_version: str = ""  # 采集时使用的配置版本
+    publish_time_raw: str = ""  # 原始时间字符串（如"5小时前"）
     
     def to_dict(self) -> dict:
         """转换为字典（用于序列化）"""
@@ -41,6 +42,7 @@ class NewsItem:
             "summary": self.summary,
             "author": self.author,
             "publish_time": self.publish_time.isoformat() if self.publish_time else None,
+            "publish_time_raw": self.publish_time_raw,
             "url": self.url,
             "source": self.source,
             "content": self.content,
@@ -355,10 +357,16 @@ class SpiderEngine:
         # 处理发布时间
         pub_time = fields.get("publish_time") or fields.get("update_time")
         if pub_time:
+            # 保存原始时间字符串
+            if isinstance(pub_time, str):
+                news.publish_time_raw = pub_time
+            else:
+                news.publish_time_raw = str(pub_time)
+            
+            # 尝试解析为datetime
             if isinstance(pub_time, datetime):
                 news.publish_time = pub_time
             elif isinstance(pub_time, str):
-                # 尝试解析
                 from dateutil import parser
                 try:
                     news.publish_time = parser.parse(pub_time)
@@ -462,6 +470,13 @@ class SpiderEngine:
         # 处理发布时间
         pub_time = fields.get("publish_time") or fields.get("update_time")
         if pub_time:
+            # 保存原始时间字符串
+            if isinstance(pub_time, str):
+                news.publish_time_raw = pub_time
+            else:
+                news.publish_time_raw = str(pub_time)
+            
+            # 尝试解析为datetime
             if isinstance(pub_time, datetime):
                 news.publish_time = pub_time
             elif isinstance(pub_time, str):

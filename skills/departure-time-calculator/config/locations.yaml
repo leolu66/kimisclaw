@@ -1,0 +1,96 @@
+# 地点配置
+# ID格式: {city}_{type}_{name}，小写，用下划线连接
+
+locations:
+  # 南京地点
+  nanjing_home:
+    name: "家"
+    city: "南京"
+    address: "长阳花园"
+    type: "residence"
+  
+  nanjing_hq:
+    name: "南京总部"
+    city: "南京"
+    address: "雨花大道"
+    type: "office"
+  
+  nanjing_south_station:
+    name: "南京南站"
+    city: "南京"
+    address: "南京南站"
+    type: "train_station"
+  
+  nanjing_airport_bus_station:
+    name: "河西万达大巴车站"
+    city: "南京"
+    address: "河西万达广场机场大巴站"
+    type: "bus_station"
+  
+  lukou_airport:
+    name: "禄口机场"
+    city: "南京"
+    address: "南京禄口国际机场"
+    type: "airport"
+  
+  # 北京地点
+  beijing_dorm:
+    name: "北京宿舍"
+    city: "北京"
+    address: "一品亦庄"
+    type: "residence"
+  
+  beijing_office:
+    name: "北京公司"
+    city: "北京"
+    address: "丽泽天地"
+    type: "office"
+  
+  beijing_south_station:
+    name: "北京南站"
+    city: "北京"
+    address: "北京南站"
+    type: "train_station"
+  
+  daxing_airport:
+    name: "大兴机场"
+    city: "北京"
+    address: "北京大兴国际机场"
+    type: "airport"
+  
+  caoqiao_station:
+    name: "草桥地铁口"
+    city: "北京"
+    address: "草桥地铁站"
+    type: "subway_station"
+  
+  # 广州地点
+  guangzhou_cu_hotel:
+    name: "潮漫酒店"
+    city: "广州"
+    address: "广州萝岗科学城神舟路地铁站店，广州联通软院附近"
+    type: "residence"
+  
+  guangzhou_baiyun_airport:
+    name: "白云机场"
+    city: "广州"
+    address: "广州白云国际机场"
+    type: "airport"
+  
+  guangzhou_gaotangshi_station:
+    name: "高塘石地铁站"
+    city: "广州"
+    address: "地铁6号线高塘石站A口"
+    type: "subway_station"
+  
+  guangzhou_south_station:
+    name: "广州南站"
+    city: "广州"
+    address: "广州南站"
+    type: "train_station"
+  
+  guangzhou_jinfeng_station:
+    name: "金峰地铁站"
+    city: "广州"
+    address: "地铁6号线金峰站"
+    type: "subway_station"

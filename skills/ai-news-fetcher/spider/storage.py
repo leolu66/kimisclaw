@@ -78,32 +78,67 @@ class MarkdownStorage(BaseStorage):
     """Markdown 格式存储（适合人工阅读）"""
     
     def save(self, items: List[NewsItem]):
-        """保存为 Markdown"""
+        """保存为 Markdown（按来源分组表格格式）"""
+        from collections import defaultdict
+        
+        # 按来源分组
+        source_groups = defaultdict(list)
+        for item in items:
+            source_groups[item.source].append(item)
+        
+        # 构建汇总表格
         lines = [
-            "# 新闻采集结果",
-            f"",
-            f"生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            f"总条目数: {len(items)}",
-            f"",
+            "# 最新AI新闻",
+            "",
+            f"> 更新时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            f"> 共获取 {len(items)} 条新闻",
+            "",
             "---",
-            f"",
+            "",
+            "## 结果汇总",
+            "",
+            "| 来源 | 获取数量 | 链接 |",
+            "| ---------- | -------- | ------- |",
         ]
         
-        for i, item in enumerate(items, 1):
+        # 汇总表格行
+        for source, items_in_source in sorted(source_groups.items()):
+            count = len(items_in_source)
+            # 提取域名作为链接
+            if items_in_source:
+                domain = items_in_source[0].url.split('/')[2] if items_in_source[0].url else ''
+                lines.append(f"| {source} | {count}条 | [{domain}](https://{domain}) |")
+        
+        lines.append("")
+        
+        # 每个来源的详细表格
+        for source, items_in_source in sorted(source_groups.items()):
             lines.extend([
-                f"## {i}. {item.title}",
-                f"",
-                f"**来源**: {item.source}  ",
-                f"**作者**: {item.author or '未知'}  ",
-                f"**发布时间**: {item.publish_time.strftime('%Y-%m-%d %H:%M') if item.publish_time else '未知'}  ",
-                f"**链接**: [{item.url}]({item.url})",
-                f"",
-                f"**摘要**:",
-                f"> {item.summary or '(无摘要)'}",
-                f"",
-                "---",
-                f"",
+                f"## {source}",
+                "",
+                "| 序号 | 标题 | 摘要 | 更新时间 |",
+                "| ---- | ---- | ---- | -------- |",
             ])
+            
+            for i, item in enumerate(items_in_source, 1):
+                # 标题作为链接
+                title_link = f"[{item.title}]({item.url})" if item.url else item.title
+                
+                # 摘要（限制长度）
+                summary = item.summary or ""
+                if len(summary) > 50:
+                    summary = summary[:47] + "..."
+                
+                # 时间 - 优先使用原始时间字符串（如"5小时前"）
+                time_str = "未知"
+                if item.publish_time_raw:
+                    time_str = item.publish_time_raw
+                elif item.publish_time:
+                    time_str = item.publish_time.strftime('%m-%d %H:%M')
+                
+                lines.append(f"| {i} | {title_link} | {summary} | {time_str} |")
+            
+            lines.append("")
         
         with open(self.output_path, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))

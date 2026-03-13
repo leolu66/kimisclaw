@@ -1,0 +1,289 @@
+# 路线方案配置
+# 支持多段行程，每段包含: from, to, mode(交通方式), idle(闲时分钟), busy(忙时分钟), wait(等待分钟)
+# buffer: flight(飞机提前截止分钟), train(高铁提前停止检票分钟)
+
+routes:
+  # ========== 北京路线 ==========
+
+  # 北京宿舍 → 大兴机场 (飞机)
+  # 价格说明：南航乘客送地铁票，非南航需自付35元
+  beijing_dorm_to_daxing_airport:
+    name: "北京宿舍 → 大兴机场"
+    from: "beijing_dorm"
+    to: "daxing_airport"
+    transport_type: "flight"
+    segments:
+      - from: "北京宿舍"
+        to: "草桥地铁口"
+        mode: "打车"
+        idle: 25
+        busy: 35
+        wait: 10
+        price: 32  # 打车闲时32元
+      - from: "草桥地铁口"
+        to: "大兴机场"
+        mode: "地铁机场线（从G口进入）"
+        idle: 20
+        busy: 20
+        wait: 5
+        price_options:
+          - name: "南航乘客"
+            price: 0
+            note: "乘坐南方航空航班赠送地铁票"
+          - name: "其他航空"
+            price: 35
+            note: "机场线票价35元"
+    price_options:
+      - name: "南航乘客"
+        total: 32
+        note: "打车32元 + 地铁免费"
+      - name: "其他航空"
+        total: 67
+        note: "打车32元 + 地铁35元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # 北京宿舍 → 北京南站 (高铁)
+  beijing_dorm_to_beijing_south:
+    name: "北京宿舍 → 北京南站"
+    from: "beijing_dorm"
+    to: "beijing_south_station"
+    transport_type: "train"
+    segments:
+      - from: "北京宿舍"
+        to: "北京南站"
+        mode: "打车"
+        idle: 35
+        busy: 50
+        wait: 5
+        price: 70  # 打车约70元
+    price:
+      total: 70
+      note: "打车费用约70元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # 北京公司 → 大兴机场 (飞机)
+  # 价格说明：南航乘客送地铁票，非南航需自付35元
+  beijing_office_to_daxing_airport:
+    name: "北京公司 → 大兴机场"
+    from: "beijing_office"
+    to: "daxing_airport"
+    transport_type: "flight"
+    segments:
+      - from: "北京公司"
+        to: "草桥地铁口"
+        mode: "打车"
+        idle: 30
+        busy: 45
+        wait: 5
+        price: 55
+      - from: "草桥地铁口"
+        to: "大兴机场"
+        mode: "地铁机场线（从G口进入）"
+        idle: 20
+        busy: 20
+        wait: 5
+        price_options:
+          - name: "南航乘客"
+            price: 0
+            note: "乘坐南方航空航班赠送地铁票"
+          - name: "其他航空"
+            price: 35
+            note: "机场线票价35元"
+    price_options:
+      - name: "南航乘客"
+        total: 55
+        note: "打车55元 + 地铁免费"
+      - name: "其他航空"
+        total: 90
+        note: "打车55元 + 地铁35元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # 北京公司 → 北京南站 (高铁)
+  beijing_office_to_beijing_south:
+    name: "北京公司 → 北京南站"
+    from: "beijing_office"
+    to: "beijing_south_station"
+    transport_type: "train"
+    segments:
+      - from: "北京公司"
+        to: "北京南站"
+        mode: "打车"
+        idle: 20
+        busy: 35
+        wait: 5
+        price: 40
+    price:
+      total: 40
+      note: "打车费用约40元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # ========== 南京路线 ==========
+  
+  # 南京家 → 禄口机场 (飞机) - 机场大巴路线
+  # 河西万达机场大巴时刻表（截至2026年3月）：
+  # 05:40, 06:40, 07:40, 08:40, 09:40, 10:40, 11:40, 12:40, 13:40, 14:40, 15:40, 16:40, 17:40, 18:40, 19:40
+  # 乘车地点：河西万达广场（江东万达广场公交站台）
+  nanjing_home_to_lukou_airport:
+    name: "家 → 禄口机场"
+    from: "nanjing_home"
+    to: "lukou_airport"
+    transport_type: "flight"
+    note: "河西万达机场大巴每小时40分发车（05:40-19:40），乘车地点：江东万达广场公交站台"
+    bus_schedule: ["05:40", "06:40", "07:40", "08:40", "09:40", "10:40", "11:40", "12:40", "13:40", "14:40", "15:40", "16:40", "17:40", "18:40", "19:40"]
+    segments:
+      - from: "家"
+        to: "河西万达大巴车站"
+        mode: "打车"
+        idle: 10
+        busy: 5
+        wait: 5
+        price: 20
+      - from: "河西万达大巴车站"
+        to: "禄口机场"
+        mode: "机场大巴（每小时40分发车）"
+        idle: 60
+        busy: 60
+        wait: 0
+        price: 25
+    price:
+      total: 45
+      note: "打车20元 + 机场大巴25元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # 南京总部 → 禄口机场 (飞机)
+  nanjing_hq_to_lukou_airport:
+    name: "南京总部 → 禄口机场"
+    from: "nanjing_hq"
+    to: "lukou_airport"
+    transport_type: "flight"
+    segments:
+      - from: "南京总部"
+        to: "南京南站"
+        mode: "打车"
+        idle: 15
+        busy: 25
+        wait: 5
+        price: 18
+      - from: "南京南站"
+        to: "禄口机场"
+        mode: "地铁S1"
+        idle: 40
+        busy: 40
+        wait: 8
+        price: 8
+    price:
+      total: 26
+      note: "打车18元 + 地铁8元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # 南京家 → 南京南站 (高铁)
+  nanjing_home_to_nanjing_south:
+    name: "家 → 南京南站"
+    from: "nanjing_home"
+    to: "nanjing_south_station"
+    transport_type: "train"
+    segments:
+      - from: "家"
+        to: "南京南站"
+        mode: "打车"
+        idle: 20
+        busy: 30
+        wait: 5
+        price: 25
+    price:
+      total: 25
+      note: "打车费用约25元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # 南京总部 → 南京南站 (高铁)
+  nanjing_hq_to_nanjing_south:
+    name: "南京总部 → 南京南站"
+    from: "nanjing_hq"
+    to: "nanjing_south_station"
+    transport_type: "train"
+    segments:
+      - from: "南京总部"
+        to: "南京南站"
+        mode: "打车"
+        idle: 15
+        busy: 25
+        wait: 5
+        price: 18
+    price:
+      total: 18
+      note: "打车费用约18元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # ========== 广州路线 ==========
+
+  # 广州白云机场 → 潮漫酒店
+  guangzhou_airport_to_cu_hotel:
+    name: "广州白云机场 → 潮漫酒店"
+    from: "guangzhou_baiyun_airport"
+    to: "guangzhou_cu_hotel"
+    transport_type: "transfer"  # 中转路线，不涉及赶飞机/高铁
+    segments:
+      - from: "白云机场"
+        to: "高塘石地铁站"
+        mode: "地铁3号线转6号线（体育西路方向→香雪方向，燕塘站换乘）"
+        idle: 70
+        busy: 70
+        wait: 5
+        price: 8
+      - from: "高塘石地铁站"
+        to: "潮漫酒店"
+        mode: "打车"
+        idle: 12
+        busy: 12
+        wait: 5
+        price: 17.5
+    price:
+      total: 25.5
+      note: "地铁8元 + 打车17.5元"
+    buffer:
+      flight: 45
+      train: 15
+
+  # 广州潮漫酒店 → 白云机场 (飞机)
+  guangzhou_cu_hotel_to_airport:
+    name: "潮漫酒店 → 广州白云机场"
+    from: "guangzhou_cu_hotel"
+    to: "guangzhou_baiyun_airport"
+    transport_type: "flight"
+    segments:
+      - from: "潮漫酒店"
+        to: "金峰地铁站"
+        mode: "打车"
+        idle: 12
+        busy: 12
+        wait: 5
+        price: 12
+      - from: "金峰地铁站"
+        to: "白云机场"
+        mode: "地铁6号线转3号线（浔峰岗方向→机场方向，燕塘站换乘）"
+        idle: 60
+        busy: 60
+        wait: 8
+        price: 8
+    price:
+      total: 20
+      note: "打车12元 + 地铁8元"
+    buffer:
+      flight: 45
+      train: 15

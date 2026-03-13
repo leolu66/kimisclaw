@@ -348,9 +348,16 @@ ${'─'.repeat(40)}
 
       const deadline = dayjs(task.deadline).format('MM-DD HH:mm');
       const overdueFlag = showOverdue ? '⚠️ ' : '';
-      const todoNum = task.todoNumber ? `[${task.todoNumber}]` : '';
+      
+      // 显示编号：待办任务用 [N]，已完成/取消的用 [YYMMDD-N]
+      let taskNum = '';
+      if (task.todoNumber) {
+        taskNum = `[${task.todoNumber}]`;
+      } else if (task.archivedTodoNumber) {
+        taskNum = `[${task.archivedTodoNumber}]`;
+      }
 
-      return `  ${overdueFlag}${todoNum} ${priorityEmoji[task.priority]} ${typeEmoji[task.type]} ${task.title} (${deadline})`;
+      return `  ${overdueFlag}${taskNum} ${priorityEmoji[task.priority]} ${typeEmoji[task.type]} ${task.title} (${deadline})`;
     }).join('\n');
   }
 

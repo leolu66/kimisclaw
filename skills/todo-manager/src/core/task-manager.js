@@ -97,43 +97,69 @@ class TaskManager {
   /**
    * 完成任务
    * @param {string} taskId - 任务 ID（支持 uuid/uniqueId/todoNumber）
+   * @param {string} comment - 完成备注（可选）
    * @returns {Object|null} 完成的任务
    */
-  completeTask(taskId) {
+  completeTask(taskId, comment) {
     const task = this._findTask(taskId);
     if (!task) return null;
 
-    // 释放待办编号
+    // 释放待办编号，生成归档格式 YYMMDD-原编号
+    let archivedNumber = null;
     if (task.todoNumber) {
-      this._releaseTodoNumber(task.todoNumber);
+      archivedNumber = this._releaseTodoNumber(task.todoNumber);
     }
 
-    return this.updateTask(task.id, {
+    const updates = {
       status: 'completed',
       completedAt: dayjs().toISOString(),
-      todoNumber: null
-    });
+      todoNumber: null,
+      archivedTodoNumber: archivedNumber
+    };
+
+    // 如果有备注，添加到评论
+    if (comment) {
+      updates.comments = [...(task.comments || []), {
+        content: comment,
+        createdAt: dayjs().toISOString()
+      }];
+    }
+
+    return this.updateTask(task.id, updates);
   }
 
   /**
    * 取消任务
    * @param {string} taskId - 任务 ID（支持 uuid/uniqueId/todoNumber）
+   * @param {string} comment - 取消备注（可选）
    * @returns {Object|null} 取消的任务
    */
-  cancelTask(taskId) {
+  cancelTask(taskId, comment) {
     const task = this._findTask(taskId);
     if (!task) return null;
 
-    // 释放待办编号
+    // 释放待办编号，生成归档格式 YYMMDD-原编号
+    let archivedNumber = null;
     if (task.todoNumber) {
-      this._releaseTodoNumber(task.todoNumber);
+      archivedNumber = this._releaseTodoNumber(task.todoNumber);
     }
 
-    return this.updateTask(task.id, {
+    const updates = {
       status: 'cancelled',
       completedAt: dayjs().toISOString(),
-      todoNumber: null
-    });
+      todoNumber: null,
+      archivedTodoNumber: archivedNumber
+    };
+
+    // 如果有备注，添加到评论
+    if (comment) {
+      updates.comments = [...(task.comments || []), {
+        content: comment,
+        createdAt: dayjs().toISOString()
+      }];
+    }
+
+    return this.updateTask(task.id, updates);
   }
 
   /**
@@ -308,35 +334,36 @@ class TaskManager {
   }
 
   /**
-   * 分配待办编号（最小可用编号）
+   * 分配待办编号（1-99池中最小可用编号）
    * @returns {number} 待办编号
    */
   _allocateTodoNumber() {
     const tasks = this.storage.getTasks();
+    
+    // 获取已使用的待办编号（pending状态的任务）
     const usedNumbers = tasks
       .filter(t => t.status === 'pending' && t.todoNumber)
-      .map(t => t.todoNumber)
-      .sort((a, b) => a - b);
-
-    // 找到最小的未使用编号
-    let number = 1;
-    for (const used of usedNumbers) {
-      if (used === number) {
-        number++;
-      } else {
-        break;
+      .map(t => t.todoNumber);
+    
+    // 找到最小的可用编号（1-99）
+    for (let number = 1; number <= 99; number++) {
+      if (!usedNumbers.includes(number)) {
+        return number;
       }
     }
-
-    return number;
+    
+    // 如果1-99都满了，返回null（这种情况很少见）
+    return null;
   }
 
   /**
-   * 释放待办编号（标记为可重用）
+   * 释放待办编号（标记为可重用，并格式化为 YYMMDD-原编号）
    * @param {number} todoNumber - 待办编号
+   * @returns {string} 归档后的编号格式 YYMMDD-N
    */
   _releaseTodoNumber(todoNumber) {
-    // 编号会在下次分配时自动重用，这里不需要额外操作
+    const today = dayjs().format('YYMMDD');
+    return `${today}-${todoNumber}`;
   }
 
   /**
