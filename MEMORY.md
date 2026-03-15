@@ -90,6 +90,7 @@ _和用户六一对话时学到的东西，记在这里。_
 - ✅ skill-creator-local - 创建新技能
 - ✅ vault - 密码箱（主密码可用，23个平台模板已初始化）
 - ✅ **departure-time-calculator** - 几点出发（2026-03-11新建）
+- ✅ **imap-email-reader** - IMAP邮箱读取（2026-03-15新建）
 
 ## 项目成果
 
@@ -123,6 +124,22 @@ _和用户六一对话时学到的东西，记在这里。_
   - 缓冲时间：飞机提前45分钟，高铁提前15分钟
 - 使用方式：`python scripts/calculate_departure.py "从北京宿舍去大兴机场，17:30的飞机"`
 - 输出：路线详情、行程耗时、最迟出发时间
+
+### IMAP邮箱读取（imap-email-reader）
+- 创建时间：2026-03-15
+- 项目路径：`/root/.openclaw/workspace/skills/imap-email-reader/`
+- 功能：使用 IMAP 协议读取邮箱邮件
+- 配置（环境变量）：
+  - EMAIL_IMAP_SERVER: imap.qq.com
+  - EMAIL_IMAP_PORT: 993
+  - EMAIL_USERNAME: lu.zhen9@qq.com
+  - EMAIL_PASSWORD: jownkbygnemccaha（QQ邮箱授权码）
+- 支持功能：
+  - 读取最新邮件列表
+  - 筛选未读邮件
+  - 查看邮件详情
+  - 按主题/发件人/日期搜索
+- 支持邮箱：QQ邮箱、163邮箱、Gmail、Outlook等
 
 ---
 

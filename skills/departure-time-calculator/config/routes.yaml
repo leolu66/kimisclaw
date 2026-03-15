@@ -1,6 +1,6 @@
 # 路线方案配置
 # 支持多段行程，每段包含: from, to, mode(交通方式), idle(闲时分钟), busy(忙时分钟), wait(等待分钟)
-# buffer: flight(飞机提前截止分钟), train(高铁提前停止检票分钟)
+# buffer: flight(飞机提前截止分钟), train(高铁提前停止检票分钟), extra(额外缓冲时间，默认10分钟)
 
 routes:
   # ========== 北京路线 ==========
@@ -16,10 +16,10 @@ routes:
       - from: "北京宿舍"
         to: "草桥地铁口"
         mode: "打车"
-        idle: 25
-        busy: 35
+        idle: 30
+        busy: 30
         wait: 10
-        price: 32  # 打车闲时32元
+        price: 32  # 打车约32元
       - from: "草桥地铁口"
         to: "大兴机场"
         mode: "地铁机场线（从G口进入）"
@@ -43,6 +43,7 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # 北京宿舍 → 北京南站 (高铁)
   beijing_dorm_to_beijing_south:
@@ -57,13 +58,14 @@ routes:
         idle: 35
         busy: 50
         wait: 5
-        price: 70  # 打车约70元
+        price: 40  # 打车约40元
     price:
-      total: 70
-      note: "打车费用约70元"
+      total: 40
+      note: "打车费用约40元"
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # 北京公司 → 大兴机场 (飞机)
   # 价格说明：南航乘客送地铁票，非南航需自付35元
@@ -103,6 +105,7 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # 北京公司 → 北京南站 (高铁)
   beijing_office_to_beijing_south:
@@ -124,6 +127,7 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # ========== 南京路线 ==========
   
@@ -159,6 +163,7 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # 南京总部 → 禄口机场 (飞机)
   nanjing_hq_to_lukou_airport:
@@ -187,6 +192,7 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # 南京家 → 南京南站 (高铁)
   nanjing_home_to_nanjing_south:
@@ -208,6 +214,7 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # 南京总部 → 南京南站 (高铁)
   nanjing_hq_to_nanjing_south:
@@ -229,6 +236,7 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # ========== 广州路线 ==========
 
@@ -259,6 +267,7 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
 
   # 广州潮漫酒店 → 白云机场 (飞机)
   guangzhou_cu_hotel_to_airport:
@@ -287,3 +296,4 @@ routes:
     buffer:
       flight: 45
       train: 15
+      extra: 10
